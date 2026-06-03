@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathSnap — Free Photo Math Solver with Step-by-Step Solutions</title>
+<meta name="description" content="Solve any math problem instantly for free. Upload a photo or type your problem — get step-by-step solutions in seconds. Algebra, calculus, geometry and more.">
+<meta property="og:title" content="MathSnap — Free Photo Math Solver">
+<meta property="og:description" content="Take a photo of any math problem and get instant step-by-step solutions. 100% free, no login required.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourdomain.com">
+<meta property="og:image" content="https://yourdomain.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MathSnap — Free Photo Math Solver">
+<meta name="twitter:description" content="Solve any math problem from a photo. Free, instant, step-by-step.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://yourdomain.com">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "MathSnap",
+  "description": "Free photo math solver with step-by-step solutions",
+  "url": "https://yourdomain.com",
+  "applicationCategory": "EducationApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": ["Photo math solving", "Step-by-step solutions", "Algebra", "Calculus", "Geometry"]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap&font-display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;
+  --surface:#13131a;
+  --surface2:#1c1c26;
+  --border:#2a2a3a;
+  --accent:#7c6af7;
+  --accent2:#a78bfa;
+  --gold:#f0c040;
+  --text:#f0eeff;
+  --muted:#8b87aa;
+  --green:#4ade80;
+  --red:#f87171;
+}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
+.noise{position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");z-index:0}
+.glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,106,247,0.12) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:0}
+
+/* ── HEADER ── */
+header{position:relative;z-index:10;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text);display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.badge{font-size:11px;background:rgba(124,106,247,0.15);border:1px solid rgba(124,106,247,0.3);color:var(--accent2);padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace}
+
+/* ── LAYOUT ── */
+main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:3rem 1.5rem 4rem}
+
+/* ── HERO ── */
+.hero{text-align:center;margin-bottom:3rem}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;margin-bottom:1rem}
+.hero h1 em{font-style:italic;color:var(--accent2)}
+.hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
+
+/* ── UPLOAD ZONE ── */
+.upload-zone{background:var(--surface);border:1.5px dashed var(--border);border-radius:20px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden}
+.upload-zone:hover,.upload-zone.drag,.upload-zone:focus-within{border-color:var(--accent);background:rgba(124,106,247,0.05)}
+/* hidden real input — clickable area is the whole zone via label */
+#fileInput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.upload-label{display:block;cursor:pointer;outline:none}
+.upload-label:focus-visible .upload-zone{outline:2px solid var(--accent);outline-offset:2px}
+.upload-icon{width:56px;height:56px;background:rgba(124,106,247,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px;pointer-events:none}
+.upload-zone h3{font-size:1.05rem;font-weight:500;margin-bottom:6px;pointer-events:none}
+.upload-zone p{font-size:.875rem;color:var(--muted);pointer-events:none}
+.formats{display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap;pointer-events:none}
+.fmt-tag{font-size:11px;font-family:'DM Mono',monospace;background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;color:var(--muted)}
+
+/* ── PREVIEW ── */
+.preview-area{margin-top:1.5rem;display:none}
+.preview-img{width:100%;max-height:320px;object-fit:contain;border-radius:12px;border:1px solid var(--border)}
+.file-info{font-size:.8rem;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace}
+.action-row{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}
+
+/* ── BUTTONS ── */
+.btn{padding:.65rem 1.4rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:background .15s,transform .1s,opacity .15s;border:none;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover:not(:disabled){background:#6a58e0;transform:translateY(-1px)}
+.btn-primary:active:not(:disabled){transform:scale(.98)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary:disabled{transform:none}
+
+/* ── OR DIVIDER ── */
+.or-divider{text-align:center;color:var(--muted);font-size:.85rem;margin:1.5rem 0;display:flex;align-items:center;gap:12px}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── TEXT INPUT ── */
+.text-input-area{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1rem 1.2rem;transition:border-color .2s}
+.text-input-area:focus-within{border-color:rgba(124,106,247,.5)}
+.text-input-area label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:6px;font-family:'DM Mono',monospace}
+textarea{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;resize:vertical;min-height:80px;line-height:1.6}
+textarea::placeholder{color:rgba(139,135,170,.4)}
+.char-hint{font-size:.75rem;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace}
+
+/* ── SOLVING ── */
+.solving{display:none;text-align:center;padding:2.5rem;background:var(--surface);border-radius:20px;margin-top:1.5rem}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.solving p{color:var(--muted);font-size:.9rem}
+/* FIX: dots animation using ::after on a span */
+.solving p .dots-anim::after{content:'';animation:dots-anim 1.5s steps(1) infinite}
+@keyframes dots-anim{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}100%{content:''}}
+
+/* ── RESULT CARD ── */
+.result-card{display:none;margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.result-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:rgba(124,106,247,.06)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.result-header h3{font-size:.95rem;font-weight:500}
+.result-body{padding:1.5rem}
+.answer-box{background:rgba(240,192,64,.07);border:1px solid rgba(240,192,64,.2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.4rem}
+.answer-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--gold);opacity:.8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
+.answer-value{font-size:1.4rem;font-weight:600;color:var(--gold);font-family:'DM Mono',monospace;word-break:break-word}
+.steps-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em}
+.step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+.step-num{width:26px;height:26px;border-radius:8px;background:rgba(124,106,247,.15);color:var(--accent2);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-text{font-size:.9rem;line-height:1.7;color:var(--text);word-break:break-word}
+.step-text strong{color:var(--accent2);font-weight:500}
+.step-text code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:.85em;color:var(--gold)}
+.explanation{background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;font-size:.88rem;color:var(--muted);line-height:1.7}
+.explanation strong{color:var(--text)}
+
+/* ── EXAMPLES ── */
+.examples{margin-top:3rem}
+.examples h2{font-size:.8rem;color:var(--muted);margin-bottom:1rem;font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
+.example-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--surface);border:1px solid var(--border);padding:.45rem .9rem;border-radius:10px;font-size:.82rem;cursor:pointer;transition:all .15s;color:var(--muted)}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(124,106,247,.06)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ── ERROR ── */
+.error-box{display:none;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;color:var(--red);font-size:.88rem;line-height:1.6}
+
+/* ── FILE SIZE WARNING ── */
+.size-warning{display:none;color:#f59e0b;font-size:.8rem;margin-top:6px;font-family:'DM Mono',monospace}
+
+/* ── FOOTER ── */
+footer{position:relative;z-index:10;text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem;line-height:1.8}
+footer a{color:var(--accent2);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  header{padding:1rem 1.2rem}
+  main{padding:2rem 1rem 3rem}
+  .hero h1{font-size:1.9rem}
+  .upload-zone{padding:1.8rem 1.2rem}
+  .action-row{flex-direction:column}
+  .btn{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+<div class="noise" aria-hidden="true"></div>
+<div class="glow" aria-hidden="true"></div>
+
+<header>
+  <a href="/" class="logo" aria-label="MathSnap home">
+    <div class="logo-icon" aria-hidden="true">∑</div>
+    MathSnap
+  </a>
+  <span class="badge" aria-label="Free, no login required">Free · No login</span>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Solve any math problem<br><em>instantly</em> — free</h1>
+    <p>Upload a photo of your math problem or type it in. Get clear, step-by-step solutions in seconds. Algebra, calculus, geometry &amp; more.</p>
+  </div>
+
+  <!-- Hidden file input, triggered by label/keyboard/JS -->
+  <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" id="fileInput" aria-label="Upload math problem image">
+
+  <div class="upload-zone" id="dropzone" role="button" tabindex="0" aria-label="Upload or drag-and-drop a math problem image">
+    <div class="upload-icon" aria-hidden="true">📸</div>
+    <h3>Drop your math problem here</h3>
+    <p>Drag &amp; drop or <strong style="color:var(--accent2)">click to browse</strong> a photo of any math problem</p>
+    <div class="formats" aria-label="Supported formats">
+      <span class="fmt-tag">JPG</span>
+      <span class="fmt-tag">PNG</span>
+      <span class="fmt-tag">WEBP</span>
+      <span class="fmt-tag">GIF</span>
+    </div>
+  </div>
+  <div class="size-warning" id="sizeWarning" role="alert">⚠ Image is large — compressing for best results</div>
+
+  <div class="preview-area" id="previewArea">
+    <img class="preview-img" id="previewImg" alt="Uploaded math problem">
+    <div class="file-info" id="fileInfo"></div>
+    <div class="action-row">
+      <button class="btn btn-primary" id="solveBtn">✦ Solve this problem</button>
+      <button class="btn btn-ghost" id="clearBtn">✕ Clear</button>
+    </div>
+  </div>
+
+  <div class="or-divider" aria-hidden="true">or type your problem</div>
+
+  <div class="text-input-area">
+    <label for="textInput">type or paste your math problem</label>
+    <textarea id="textInput" placeholder="e.g. Solve for x: 3x² + 5x - 2 = 0  |  ∫ sin(x)cos(x) dx  |  A train travels 60 km/h for 2.5 hours..." maxlength="2000" aria-describedby="charHint"></textarea>
+    <div class="char-hint" id="charHint"><span id="charCount">0</span> / 2000</div>
+    <div class="action-row" style="margin-top:.75rem">
+      <button class="btn btn-primary" id="solveTextBtn">✦ Solve</button>
+    </div>
+  </div>
+
+  <div class="error-box" id="errorBox" role="alert" aria-live="assertive"></div>
+
+  <div class="solving" id="solvingBox" aria-live="polite" aria-label="Solving in progress">
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Solving your problem<span class="dots-anim" aria-hidden="true"></span></p>
+  </div>
+
+  <div class="result-card" id="resultCard" aria-live="polite" aria-label="Math solution">
+    <div class="result-header">
+      <div class="status-dot" aria-hidden="true"></div>
+      <h3>Solution</h3>
+    </div>
+    <div class="result-body" id="resultBody"></div>
+  </div>
+
+  <section class="examples" aria-label="Example problems">
+    <h2>// try an example</h2>
+    <div class="example-chips" role="list">
+      <button class="chip" role="listitem" type="button">2x + 5 = 13</button>
+      <button class="chip" role="listitem" type="button">∫ x² dx</button>
+      <button class="chip" role="listitem" type="button">sin²(x) + cos²(x)</button>
+      <button class="chip" role="listitem" type="button">Derivative of 3x³ − 2x² + 7</button>
+      <button class="chip" role="listitem" type="button">Area of circle, radius 7</button>
+      <button class="chip" role="listitem" type="button">Solve: x² − 9 = 0</button>
+      <button class="chip" role="listitem" type="button">Pythagorean theorem: a=3, b=4</button>
+      <button class="chip" role="listitem" type="button">Factor: x² + 5x + 6</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>MathSnap — Free AI math solver · <a href="/privacy.html">Privacy Policy</a> · No data stored · No login required</p>
+  <p style="margin-top:.4rem">Supports Algebra · Calculus · Geometry · Statistics · Word Problems</p>
+</footer>
+
+<script>
+/* ── STATE ── */
+let currentImageB64 = null;
+let currentMimeType = null;
+let isSolving = false;
+const MAX_FILE_SIZE_MB = 8;
+const MAX_BASE64_CHARS = 5_000_000; // ~3.75MB raw
+
+/* ── ELEMENTS ── */
+const fileInput    = document.getElementById('fileInput');
+const dropzone     = document.getElementById('dropzone');
+const previewArea  = document.getElementById('previewArea');
+const previewImg   = document.getElementById('previewImg');
+const fileInfo     = document.getElementById('fileInfo');
+const solveBtn     = document.getElementById('solveBtn');
+const clearBtn     = document.getElementById('clearBtn');
+const textInput    = document.getElementById('textInput');
+const charCount    = document.getElementById('charCount');
+const solveTextBtn = document.getElementById('solveTextBtn');
+const solvingBox   = document.getElementById('solvingBox');
+const resultCard   = document.getElementById('resultCard');
+const resultBody   = document.getElementById('resultBody');
+const errorBox     = document.getElementById('errorBox');
+const sizeWarning  = document.getElementById('sizeWarning');
+
+/* ── FILE INPUT ── */
+// Click on zone opens file picker
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+});
+
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) loadImage(file);
+  fileInput.value = ''; // reset so same file can be re-selected
+});
+
+/* ── DRAG & DROP ── */
+dropzone.addEventListener('dragover',  e => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', e => { if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('drag'); });
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) loadImage(file);
+  else showError('Please drop an image file (JPG, PNG, or WEBP).');
+});
+
+/* ── LOAD IMAGE ── */
+function loadImage(file) {
+  if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+    showError(`Image too large (max ${MAX_FILE_SIZE_MB}MB). Please resize and try again.`);
+    return;
+  }
+
+  currentMimeType = file.type || 'image/jpeg';
+  const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const dataUrl = ev.target.result;
+    currentImageB64 = dataUrl.split(',')[1];
+
+    if (currentImageB64.length > MAX_BASE64_CHARS) {
+      sizeWarning.style.display = 'block';
+    } else {
+      sizeWarning.style.display = 'none';
+    }
+
+    previewImg.src = dataUrl;
+    fileInfo.textContent = `${file.name}  •  ${sizeMB} MB`;
+    previewArea.style.display = 'block';
+    hideResult();
+    errorBox.style.display = 'none';
+  };
+  reader.onerror = () => showError('Could not read the image file. Please try another.');
+  reader.readAsDataURL(file);
+}
+
+/* ── CLEAR ── */
+clearBtn.addEventListener('click', () => {
+  currentImageB64 = null;
+  currentMimeType = null;
+  previewArea.style.display = 'none';
+  previewImg.src = '';
+  sizeWarning.style.display = 'none';
+  hideResult();
+  errorBox.style.display = 'none';
+});
+
+/* ── CHAR COUNTER ── */
+textInput.addEventListener('input', () => {
+  charCount.textContent = textInput.value.length;
+});
+
+/* ── SOLVE BUTTONS ── */
+solveBtn.addEventListener('click', () => {
+  if (currentImageB64 && !isSolving) solveImage();
+});
+
+solveTextBtn.addEventListener('click', () => {
+  const q = textInput.value.trim();
+  if (q && !isSolving) solveText(q);
+});
+
+textInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    const q = textInput.value.trim();
+    if (q && !isSolving) solveText(q);
+  }
+});
+
+/* ── EXAMPLE CHIPS ── */
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    textInput.value = chip.textContent;
+    charCount.textContent = chip.textContent.length;
+    if (!isSolving) solveText(chip.textContent);
+  });
+});
+
+/* ── UI HELPERS ── */
+function showSolving() {
+  isSolving = true;
+  solvingBox.style.display = 'block';
+  resultCard.style.display = 'none';
+  errorBox.style.display = 'none';
+  setButtonsDisabled(true);
+  solvingBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideResult() {
+  solvingBox.style.display = 'none';
+  resultCard.style.display = 'none';
+}
+
+function doneSolving() {
+  isSolving = false;
+  setButtonsDisabled(false);
+}
+
+function setButtonsDisabled(state) {
+  solveBtn.disabled = state;
+  solveTextBtn.disabled = state;
+}
+
+function showError(msg) {
+  isSolving = false;
+  solvingBox.style.display = 'none';
+  errorBox.style.display = 'block';
+  errorBox.textContent = '⚠ ' + msg;
+  setButtonsDisabled(false);
+}
+
+/* ── SAFE TEXT ESCAPING (XSS prevention) ── */
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ── SAFE RICH TEXT: allows only backtick code and **bold** ── */
+function safeRichText(str) {
+  return esc(str)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]{1,100})\*\*/g, '<strong>$1</strong>');
+}
+
+/* ── API ── */
+function buildSystemPrompt() {
+  return `You are an expert math tutor. Solve math problems clearly and educationally. Always respond with ONLY valid JSON — no markdown fences, no extra text before or after. If you cannot read the image or cannot solve the problem, still return valid JSON with an error field.`;
+}
+
+function buildUserPrompt(q) {
+  const instruction = q
+    ? `Solve this math problem: ${q}`
+    : `Read the math problem shown in this image and solve it.`;
+
+  return `${instruction}
+
+Return ONLY this JSON structure:
+{
+  "problem": "restate the problem clearly in 1 sentence",
+  "answer": "the final answer, concise",
+  "steps": [
+    {"num": 1, "text": "description — use backticks for expressions like \`3x + 2\` and **bold** for key results"},
+    {"num": 2, "text": "..."}
+  ],
+  "explanation": "1-2 sentence conceptual note about the method used",
+  "error": null
+}
+
+If unsolvable or unreadable, set "error" to a short explanation and leave other fields as empty strings.
+Use plain text only — no LaTeX, no HTML. Keep steps educational and complete.`;
+}
+
+async function callAPI(messages) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: buildSystemPrompt(),
+      messages
+    })
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error?.message || `Server error (${res.status})`);
+  }
+
+  const data = await res.json();
+  const rawText = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+
+  // Strip accidental markdown fences
+  const clean = rawText.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/,'').trim();
+
+  let parsed = null;
+  try { parsed = JSON.parse(clean); } catch(_) { parsed = null; }
+  return { parsed, raw: rawText };
+}
+
+async function solveImage() {
+  showSolving();
+  try {
+    const messages = [{
+      role: 'user',
+      content: [
+        { type: 'image', source: { type: 'base64', media_type: currentMimeType, data: currentImageB64 } },
+        { type: 'text', text: buildUserPrompt('') }
+      ]
+    }];
+    const { parsed, raw } = await callAPI(messages);
+    renderResult(parsed, raw);
+  } catch(e) {
+    showError('Could not reach the solver. Please check your connection and try again.');
+    console.error(e);
+  } finally {
+    doneSolving();
+  }
+}
+
+async function solveText(q) {
+  showSolving();
+  try {
+    const messages = [{ role: 'user', content: buildUserPrompt(q) }];
+    const { parsed, raw } = await callAPI(messages);
+    renderResult(parsed, raw);
+  } catch(e) {
+    showError('Could not reach the solver. Please check your connection and try again.');
+    console.error(e);
+  } finally {
+    doneSolving();
+  }
+}
+
+/* ── RENDER RESULT ── */
+function renderResult(parsed, raw) {
+  solvingBox.style.display = 'none';
+  resultCard.style.display = 'block';
+
+  if (!parsed) {
+    resultBody.innerHTML = `
+      <div class="explanation" style="color:var(--text)">
+        ${esc(raw).replace(/\n/g, '<br>')}
+      </div>
+      <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>`;
+    attachCopyBtn();
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+
+  if (parsed.error) {
+    resultBody.innerHTML = `
+      <div class="explanation" style="color:var(--red)">
+        <strong>Could not solve:</strong> ${esc(parsed.error)}
+      </div>`;
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+
+  let stepsHtml = '';
+  if (Array.isArray(parsed.steps) && parsed.steps.length) {
+    stepsHtml = `<p class="steps-label">step-by-step solution</p>`;
+    parsed.steps.forEach(s => {
+      const num = parseInt(s.num, 10) || '?';
+      const text = safeRichText(s.text || '');
+      stepsHtml += `
+        <div class="step">
+          <div class="step-num" aria-hidden="true">${num}</div>
+          <div class="step-text">${text}</div>
+        </div>`;
+    });
+  }
+
+  const explanationHtml = parsed.explanation
+    ? `<div class="explanation"><strong>Method:</strong> ${esc(parsed.explanation)}</div>`
+    : '';
+
+  resultBody.innerHTML = `
+    <div class="answer-box" role="region" aria-label="Final answer">
+      <div class="answer-label">final answer</div>
+      <div class="answer-value">${esc(parsed.answer || '—')}</div>
+    </div>
+    ${stepsHtml}
+    ${explanationHtml}
+    <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>
+  `;
+
+  attachCopyBtn();
+  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function attachCopyBtn() {
+  const btn = document.getElementById('copyBtn');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    const text = resultBody.innerText.replace('Copy solution', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = 'Copy solution'; }, 2000);
+    }).catch(() => {
+      btn.textContent = 'Copy failed';
+    });
+  });
+}
+</script>
+</body>
+</html>
