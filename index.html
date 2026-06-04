@@ -1,563 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MathSnap — Free Photo Math Solver with Step-by-Step Solutions</title>
-<meta name="description" content="Solve any math problem instantly for free. Upload a photo or type your problem — get step-by-step solutions in seconds. Algebra, calculus, geometry and more.">
-<meta property="og:title" content="MathSnap — Free Photo Math Solver">
-<meta property="og:description" content="Take a photo of any math problem and get instant step-by-step solutions. 100% free, no login required.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://johircu2-bit.github.io/mathsnap">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://johircu2-bit.github.io/mathsnap">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "MathSnap",
-  "description": "Free photo math solver with step-by-step solutions",
-  "url": "https://johircu2-bit.github.io/mathsnap",
-  "applicationCategory": "EducationApplication",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-}
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c26;
-  --border:#2a2a3a;--accent:#7c6af7;--accent2:#a78bfa;
-  --gold:#f0c040;--text:#f0eeff;--muted:#8b87aa;
-  --green:#4ade80;--red:#f87171;--orange:#fb923c;
-}
-body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
-.noise{position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");z-index:0}
-.glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,106,247,0.12) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:0}
-
-header{position:relative;z-index:10;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text);display:flex;align-items:center;gap:8px;text-decoration:none}
-.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.header-right{display:flex;align-items:center;gap:10px}
-.api-status{font-size:11px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;border:1px solid}
-.api-status.ok{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--green)}
-.api-status.missing{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:var(--orange)}
-.free-badge{font-size:11px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace}
-
-main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-
-/* API KEY SETUP */
-.api-setup{background:var(--surface);border:1.5px solid rgba(74,222,128,.3);border-radius:20px;padding:1.5rem;margin-bottom:2rem}
-.api-setup.has-key{border-color:rgba(74,222,128,.2)}
-.api-setup-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.api-setup-header h2{font-size:1rem;font-weight:500;color:var(--green)}
-.api-setup p{font-size:.875rem;color:var(--muted);line-height:1.7;margin-bottom:12px}
-.api-setup a{color:var(--accent2);text-decoration:none}
-.api-setup a:hover{text-decoration:underline}
-.steps-mini{background:var(--surface2);border-radius:10px;padding:.75rem 1rem;margin-bottom:12px;font-size:.82rem;color:var(--muted);line-height:2}
-.steps-mini b{color:var(--text)}
-.steps-mini a{color:var(--accent2);font-weight:500}
-.api-input-row{display:flex;gap:8px}
-.api-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.6rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.85rem;outline:none;transition:border-color .2s}
-.api-input:focus{border-color:var(--accent)}
-.api-input::placeholder{color:rgba(139,135,170,.4)}
-.api-input.saved{border-color:var(--green)}
-
-.hero{text-align:center;margin-bottom:2.5rem}
-.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;margin-bottom:1rem}
-.hero h1 em{font-style:italic;color:var(--accent2)}
-.hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
-
-.upload-zone{background:var(--surface);border:1.5px dashed var(--border);border-radius:20px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(124,106,247,0.05)}
-#fileInput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-.upload-icon{width:56px;height:56px;background:rgba(124,106,247,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px}
-.upload-zone h3{font-size:1.05rem;font-weight:500;margin-bottom:6px}
-.upload-zone p{font-size:.875rem;color:var(--muted)}
-.formats{display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap}
-.fmt-tag{font-size:11px;font-family:'DM Mono',monospace;background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;color:var(--muted)}
-
-.preview-area{margin-top:1.5rem;display:none}
-.preview-img{width:100%;max-height:320px;object-fit:contain;border-radius:12px;border:1px solid var(--border)}
-.file-info{font-size:.8rem;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace}
-.action-row{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}
-
-.btn{padding:.65rem 1.4rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .15s;border:none;display:inline-flex;align-items:center;gap:6px}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover:not(:disabled){background:#6a58e0;transform:translateY(-1px)}
-.btn-primary:active:not(:disabled){transform:scale(.98)}
-.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
-.btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
-.btn-sm{padding:.45rem 1rem;font-size:.82rem}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-
-.or-divider{text-align:center;color:var(--muted);font-size:.85rem;margin:1.5rem 0;display:flex;align-items:center;gap:12px}
-.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-
-.text-input-area{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1rem 1.2rem;transition:border-color .2s}
-.text-input-area:focus-within{border-color:rgba(124,106,247,.5)}
-.text-input-area label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:6px;font-family:'DM Mono',monospace}
-textarea{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;resize:vertical;min-height:80px;line-height:1.6}
-textarea::placeholder{color:rgba(139,135,170,.4)}
-.char-hint{font-size:.75rem;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace}
-
-.solving{display:none;text-align:center;padding:2.5rem;background:var(--surface);border-radius:20px;margin-top:1.5rem}
-.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}
-@keyframes spin{to{transform:rotate(360deg)}}
-.solving p{color:var(--muted);font-size:.9rem}
-.solving p .dots-anim::after{content:'';animation:dots-anim 1.5s steps(1) infinite}
-@keyframes dots-anim{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}100%{content:''}}
-
-.result-card{display:none;margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;animation:fadeUp .3s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.result-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:rgba(124,106,247,.06)}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
-.result-header h3{font-size:.95rem;font-weight:500}
-.result-body{padding:1.5rem}
-.answer-box{background:rgba(240,192,64,.07);border:1px solid rgba(240,192,64,.2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.4rem}
-.answer-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--gold);opacity:.8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
-.answer-value{font-size:1.4rem;font-weight:600;color:var(--gold);font-family:'DM Mono',monospace;word-break:break-word}
-.steps-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em}
-.step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
-.step-num{width:26px;height:26px;border-radius:8px;background:rgba(124,106,247,.15);color:var(--accent2);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.step-text{font-size:.9rem;line-height:1.7;color:var(--text);word-break:break-word}
-.step-text strong{color:var(--accent2);font-weight:500}
-.step-text code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:.85em;color:var(--gold)}
-.explanation{background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;font-size:.88rem;color:var(--muted);line-height:1.7}
-.explanation strong{color:var(--text)}
-
-.examples{margin-top:3rem}
-.examples h2{font-size:.8rem;color:var(--muted);margin-bottom:1rem;font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
-.example-chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{background:var(--surface);border:1px solid var(--border);padding:.45rem .9rem;border-radius:10px;font-size:.82rem;cursor:pointer;transition:all .15s;color:var(--muted)}
-.chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(124,106,247,.06)}
-
-.error-box{display:none;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;color:var(--red);font-size:.88rem;line-height:1.6}
-
-footer{position:relative;z-index:10;text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem;line-height:1.8}
-footer a{color:var(--accent2);text-decoration:none}
-
-@media(max-width:600px){
-  header{padding:1rem 1.2rem}
-  main{padding:2rem 1rem 3rem}
-  .hero h1{font-size:1.9rem}
-  .upload-zone{padding:1.8rem 1.2rem}
-  .action-row,.api-input-row{flex-direction:column}
-  .btn{width:100%;justify-content:center}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MathSnap — Free Photo Math Solver (Groq AI)</title>
+  <meta name="description" content="Solve any math problem instantly for free. Upload photo or type — step-by-step solutions. Powered by Groq (100% free).">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://johircu2-bit.github.io/mathsnap">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0f; --surface:#13131a; --surface2:#1c1c26;
+      --border:#2a2a3a; --accent:#7c6af7; --accent2:#a78bfa;
+      --gold:#f0c040; --text:#f0eeff; --muted:#8b87aa;
+      --green:#4ade80; --red:#f87171; --orange:#fb923c;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;min-height:100vh}
+    .noise{position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");z-index:0}
+    .glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,106,247,0.12) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:0}
+    header{position:relative;z-index:10;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+    .logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text);display:flex;align-items:center;gap:8px;text-decoration:none}
+    .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .header-right{display:flex;align-items:center;gap:10px}
+    .api-status{font-size:11px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;border:1px solid}
+    .api-status.ok{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--green)}
+    .api-status.missing{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:var(--orange)}
+    .free-badge{font-size:11px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace}
+    main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .api-setup{background:var(--surface);border:1.5px solid rgba(74,222,128,.3);border-radius:20px;padding:1.5rem;margin-bottom:2rem}
+    .api-setup.has-key{border-color:rgba(74,222,128,.2)}
+    .api-setup-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .api-setup-header h2{font-size:1rem;font-weight:500;color:var(--green)}
+    .api-setup p{font-size:.875rem;color:var(--muted);line-height:1.7;margin-bottom:12px}
+    .api-setup a{color:var(--accent2);text-decoration:none}
+    .steps-mini{background:var(--surface2);border-radius:10px;padding:.75rem 1rem;margin-bottom:12px;font-size:.82rem;color:var(--muted);line-height:2}
+    .steps-mini b{color:var(--text)}
+    .api-input-row{display:flex;gap:8px;flex-wrap:wrap}
+    .api-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.6rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.85rem;outline:none}
+    .api-input:focus{border-color:var(--accent)}
+    .api-input.saved{border-color:var(--green)}
+    .btn{padding:.65rem 1.4rem;border-radius:10px;font-size:.9rem;font-weight:500;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{background:#6a58e0}
+    .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    .btn-sm{padding:.45rem 1rem;font-size:.82rem}
+    .hero{text-align:center;margin-bottom:2.5rem}
+    .hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;margin-bottom:1rem}
+    .hero h1 em{font-style:italic;color:var(--accent2)}
+    .hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto}
+    .upload-zone{background:var(--surface);border:1.5px dashed var(--border);border-radius:20px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s}
+    .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(124,106,247,0.05)}
+    #fileInput{position:absolute;width:1px;height:1px;opacity:0}
+    .upload-icon{width:56px;height:56px;background:rgba(124,106,247,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px}
+    .formats{display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+    .fmt-tag{font-size:11px;font-family:'DM Mono',monospace;background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:6px}
+    .preview-area{margin-top:1.5rem;display:none}
+    .preview-img{width:100%;max-height:320px;object-fit:contain;border-radius:12px;border:1px solid var(--border)}
+    .action-row{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}
+    .or-divider{text-align:center;color:var(--muted);margin:1.5rem 0;display:flex;align-items:center;gap:12px}
+    .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .text-input-area{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1rem 1.2rem}
+    textarea{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.95rem;resize:vertical;min-height:80px}
+    .solving{display:none;text-align:center;padding:2.5rem;background:var(--surface);border-radius:20px;margin-top:1.5rem}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .result-card{display:none;margin-top:1.5rem;background:var(--surface);border-radius:20px;overflow:hidden}
+    .result-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .status-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+    .result-body{padding:1.5rem}
+    .answer-box{background:rgba(240,192,64,.07);border:1px solid rgba(240,192,64,.2);border-radius:12px;padding:1rem;margin-bottom:1.4rem}
+    .answer-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--gold);text-transform:uppercase}
+    .answer-value{font-size:1.4rem;font-weight:600;color:var(--gold);font-family:'DM Mono',monospace;word-break:break-word}
+    .step{display:flex;gap:12px;margin-bottom:14px}
+    .step-num{width:26px;height:26px;border-radius:8px;background:rgba(124,106,247,.15);color:var(--accent2);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+    .step-text{font-size:.9rem;line-height:1.7}
+    .step-text code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 6px;border-radius:4px;color:var(--gold)}
+    .explanation{background:var(--surface2);border-radius:12px;padding:1rem;margin-top:1rem;font-size:.88rem;color:var(--muted)}
+    .examples{margin-top:3rem}
+    .examples h2{font-size:.8rem;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase}
+    .example-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+    .chip{background:var(--surface);border:1px solid var(--border);padding:.45rem .9rem;border-radius:10px;font-size:.82rem;cursor:pointer}
+    .chip:hover{border-color:var(--accent);color:var(--accent)}
+    .error-box{display:none;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:1rem;margin-top:1rem;color:var(--red)}
+    footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+    @media(max-width:600px){header{padding:1rem} .btn{width:100%;justify-content:center}}
+  </style>
 </head>
 <body>
-<div class="noise" aria-hidden="true"></div>
-<div class="glow" aria-hidden="true"></div>
-
+<div class="noise"></div><div class="glow"></div>
 <header>
-  <a href="/" class="logo" aria-label="MathSnap home">
-    <div class="logo-icon" aria-hidden="true">∑</div>
-    MathSnap
-  </a>
-  <div class="header-right">
-    <span class="api-status missing" id="apiStatusBadge">⚡ Setup needed</span>
-    <span class="free-badge">100% Free</span>
-  </div>
+  <a href="/" class="logo"><div class="logo-icon">∑</div>MathSnap</a>
+  <div class="header-right"><span class="api-status missing" id="apiStatusBadge">⚡ Setup needed</span><span class="free-badge">100% Free</span></div>
 </header>
-
 <main>
-  <div class="hero">
-    <h1>Solve any math problem<br><em>instantly</em> — free</h1>
-    <p>Upload a photo or type any math problem. Get clear, step-by-step solutions in seconds.</p>
-  </div>
+  <div class="hero"><h1>Solve any math problem<br><em>instantly</em> — free</h1><p>Upload a photo or type your problem. Step-by-step solutions.</p></div>
 
-  <!-- GEMINI API KEY SETUP -->
   <div class="api-setup" id="apiSetup">
-    <div class="api-setup-header">
-      <span style="font-size:20px">🔑</span>
-      <h2>One-time free setup: Google Gemini API Key</h2>
-    </div>
+    <div class="api-setup-header"><span style="font-size:20px">🚀</span><h2>Free API Key (Groq) — 2 min setup</h2></div>
     <div class="steps-mini">
-      <b>Step 1:</b> Go to <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a><br>
-      <b>Step 2:</b> Click <b>"Create API Key"</b> → Select any project → Copy the key<br>
-      <b>Step 3:</b> Paste it below → Done! 🎉 (No credit card needed)
+      <b>Step 1:</b> Go to <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> (Login with Google/GitHub)<br>
+      <b>Step 2:</b> Click <b>"Create API Key"</b> → Name it <code>mathsnap</code> → Expiration: <b>No expiration</b><br>
+      <b>Step 3:</b> Copy the key (starts with <code>gsk_</code>) → Paste below → Save<br>
+      💡 <b>100% free, no credit card, CORS enabled</b>
     </div>
     <div class="api-input-row">
-      <input type="password" class="api-input" id="apiKeyInput" placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+      <input type="password" class="api-input" id="apiKeyInput" placeholder="gsk_...">
       <button class="btn btn-primary btn-sm" id="saveKeyBtn">Save Key</button>
       <button class="btn btn-ghost btn-sm" id="clearKeyBtn" style="display:none">Clear</button>
     </div>
-    <div id="keyFeedback" style="font-size:.8rem;margin-top:8px;font-family:monospace"></div>
-    <p style="font-size:.75rem;color:rgba(139,135,170,.5);margin-top:8px">🔒 Key saved only in your browser. Never sent to our servers. Free: 1500 requests/day.</p>
+    <div id="keyFeedback" style="font-size:.8rem;margin-top:8px"></div>
   </div>
 
-  <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" id="fileInput" aria-label="Upload math problem image">
-
-  <div class="upload-zone" id="dropzone" role="button" tabindex="0" aria-label="Upload math problem image">
-    <div class="upload-icon" aria-hidden="true">📸</div>
+  <input type="file" accept="image/jpeg,image/png,image/webp" id="fileInput">
+  <div class="upload-zone" id="dropzone" tabindex="0">
+    <div class="upload-icon">📸</div>
     <h3>Drop your math problem here</h3>
-    <p>Drag &amp; drop or <strong style="color:var(--accent2)">click to browse</strong> a photo</p>
-    <div class="formats">
-      <span class="fmt-tag">JPG</span><span class="fmt-tag">PNG</span>
-      <span class="fmt-tag">WEBP</span><span class="fmt-tag">GIF</span>
-    </div>
+    <p>Drag & drop or <strong style="color:var(--accent2)">click to browse</strong></p>
+    <div class="formats"><span class="fmt-tag">JPG</span><span class="fmt-tag">PNG</span><span class="fmt-tag">WEBP</span></div>
   </div>
-
   <div class="preview-area" id="previewArea">
-    <img class="preview-img" id="previewImg" alt="Uploaded math problem">
+    <img class="preview-img" id="previewImg" alt="Preview">
     <div class="file-info" id="fileInfo"></div>
-    <div class="action-row">
-      <button class="btn btn-primary" id="solveBtn">✦ Solve this problem</button>
-      <button class="btn btn-ghost" id="clearBtn">✕ Clear</button>
-    </div>
+    <div class="action-row"><button class="btn btn-primary" id="solveBtn">✦ Solve this problem</button><button class="btn btn-ghost" id="clearBtn">✕ Clear</button></div>
   </div>
-
-  <div class="or-divider" aria-hidden="true">or type your problem</div>
-
+  <div class="or-divider">or type your problem</div>
   <div class="text-input-area">
     <label for="textInput">type or paste your math problem</label>
-    <textarea id="textInput" placeholder="e.g. Solve for x: 3x² + 5x - 2 = 0  |  ∫ sin(x)cos(x) dx  |  Area of circle radius 7..." maxlength="2000"></textarea>
-    <div class="char-hint"><span id="charCount">0</span> / 2000 &nbsp;·&nbsp; Ctrl+Enter to solve</div>
-    <div class="action-row" style="margin-top:.75rem">
-      <button class="btn btn-primary" id="solveTextBtn">✦ Solve</button>
-    </div>
+    <textarea id="textInput" placeholder="e.g. Solve for x: 3x² + 5x - 2 = 0 | ∫ sin(x) dx | Area of circle radius 7" maxlength="2000"></textarea>
+    <div class="action-row" style="margin-top:.75rem"><button class="btn btn-primary" id="solveTextBtn">✦ Solve</button></div>
   </div>
-
-  <div class="error-box" id="errorBox" role="alert"></div>
-  <div class="solving" id="solvingBox" aria-live="polite">
-    <div class="spinner" aria-hidden="true"></div>
-    <p>Solving your problem<span class="dots-anim" aria-hidden="true"></span></p>
-  </div>
-  <div class="result-card" id="resultCard" aria-live="polite">
-    <div class="result-header">
-      <div class="status-dot" aria-hidden="true"></div>
-      <h3>Solution</h3>
-    </div>
-    <div class="result-body" id="resultBody"></div>
-  </div>
-
-  <section class="examples" aria-label="Example problems">
-    <h2>// try an example</h2>
-    <div class="example-chips">
-      <button class="chip" type="button">2x + 5 = 13</button>
-      <button class="chip" type="button">∫ x² dx</button>
-      <button class="chip" type="button">sin²(x) + cos²(x)</button>
-      <button class="chip" type="button">Derivative of 3x³ − 2x² + 7</button>
-      <button class="chip" type="button">Area of circle, radius 7</button>
-      <button class="chip" type="button">Solve: x² − 9 = 0</button>
-      <button class="chip" type="button">Pythagorean theorem: a=3, b=4</button>
-      <button class="chip" type="button">Factor: x² + 5x + 6</button>
-    </div>
-  </section>
+  <div class="error-box" id="errorBox"></div>
+  <div class="solving" id="solvingBox"><div class="spinner"></div><p>Solving your problem...</p></div>
+  <div class="result-card" id="resultCard"><div class="result-header"><div class="status-dot"></div><h3>Solution</h3></div><div class="result-body" id="resultBody"></div></div>
+  <section class="examples"><h2>// try an example</h2><div class="example-chips" id="exampleChips"></div></section>
 </main>
-
-<footer>
-  <p>MathSnap — Free AI math solver powered by Google Gemini · <a href="privacy.html">Privacy Policy</a></p>
-  <p style="margin-top:.3rem">Algebra · Calculus · Geometry · Statistics · Word Problems · 100% Free</p>
-</footer>
+<footer><p>MathSnap — Free AI math solver powered by Groq (Llama 3) · 100% free · No login required</p></footer>
 
 <script>
-/* ── API KEY ── */
-const KEY = 'mathsnap_gemini_key';
-let apiKey = '';
+(function(){
+  const STORAGE_KEY = 'mathsnap_groq_key';
+  let apiKey = '';
+  let imgB64 = null, imgMime = null, isSolving = false;
+  const MAX_MB = 8;
 
-function loadKey() {
-  try {
-    const s = localStorage.getItem(KEY);
-    if (s) { apiKey = s; markKeySaved(); }
-  } catch(e) {}
-}
+  // DOM elements
+  const apiInput = document.getElementById('apiKeyInput');
+  const saveKeyBtn = document.getElementById('saveKeyBtn');
+  const clearKeyBtn = document.getElementById('clearKeyBtn');
+  const keyFeedback = document.getElementById('keyFeedback');
+  const apiStatusBadge = document.getElementById('apiStatusBadge');
+  const apiSetupDiv = document.getElementById('apiSetup');
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const previewArea = document.getElementById('previewArea');
+  const previewImg = document.getElementById('previewImg');
+  const fileInfo = document.getElementById('fileInfo');
+  const solveBtn = document.getElementById('solveBtn');
+  const clearPreviewBtn = document.getElementById('clearBtn');
+  const textInput = document.getElementById('textInput');
+  const solveTextBtn = document.getElementById('solveTextBtn');
+  const solvingBox = document.getElementById('solvingBox');
+  const resultCard = document.getElementById('resultCard');
+  const resultBody = document.getElementById('resultBody');
+  const errorBox = document.getElementById('errorBox');
 
-function markKeySaved() {
-  document.getElementById('apiKeyInput').value = '•'.repeat(24);
-  document.getElementById('apiKeyInput').classList.add('saved');
-  document.getElementById('clearKeyBtn').style.display = 'inline-flex';
-  document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--green)">✓ API key saved — Ready to solve math problems!</span>';
-  document.getElementById('apiStatusBadge').textContent = '✓ Ready';
-  document.getElementById('apiStatusBadge').className = 'api-status ok';
-  document.getElementById('apiSetup').classList.add('has-key');
-}
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function safeRich(s) { return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>'); }
 
-document.getElementById('saveKeyBtn').addEventListener('click', () => {
-  const val = document.getElementById('apiKeyInput').value.trim();
-  if (!val || val.startsWith('•')) {
-    document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--red)">Please paste your API key first</span>';
-    return;
-  }
-  if (!val.startsWith('AIza')) {
-    document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--orange)">⚠ Gemini keys start with "AIza" — double check?</span>';
-  }
-  try { localStorage.setItem(KEY, val); } catch(e) {}
-  apiKey = val;
-  markKeySaved();
-});
-
-document.getElementById('clearKeyBtn').addEventListener('click', () => {
-  try { localStorage.removeItem(KEY); } catch(e) {}
-  apiKey = '';
-  document.getElementById('apiKeyInput').value = '';
-  document.getElementById('apiKeyInput').classList.remove('saved');
-  document.getElementById('clearKeyBtn').style.display = 'none';
-  document.getElementById('keyFeedback').innerHTML = '';
-  document.getElementById('apiStatusBadge').textContent = '⚡ Setup needed';
-  document.getElementById('apiStatusBadge').className = 'api-status missing';
-  document.getElementById('apiSetup').classList.remove('has-key');
-});
-
-document.getElementById('apiKeyInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('saveKeyBtn').click();
-});
-
-/* ── STATE ── */
-let imgB64 = null, imgMime = null, isSolving = false;
-const MAX_MB = 8;
-
-/* ── ELEMENTS ── */
-const fileInput    = document.getElementById('fileInput');
-const dropzone     = document.getElementById('dropzone');
-const previewArea  = document.getElementById('previewArea');
-const previewImg   = document.getElementById('previewImg');
-const fileInfo     = document.getElementById('fileInfo');
-const solveBtn     = document.getElementById('solveBtn');
-const clearBtn     = document.getElementById('clearBtn');
-const textInput    = document.getElementById('textInput');
-const charCount    = document.getElementById('charCount');
-const solveTextBtn = document.getElementById('solveTextBtn');
-const solvingBox   = document.getElementById('solvingBox');
-const resultCard   = document.getElementById('resultCard');
-const resultBody   = document.getElementById('resultBody');
-const errorBox     = document.getElementById('errorBox');
-
-/* ── FILE UPLOAD ── */
-dropzone.addEventListener('click', () => fileInput.click());
-dropzone.addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
-});
-fileInput.addEventListener('change', e => {
-  const f = e.target.files[0]; if (f) loadImg(f); fileInput.value = '';
-});
-dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
-dropzone.addEventListener('dragleave', e => { if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('drag'); });
-dropzone.addEventListener('drop', e => {
-  e.preventDefault(); dropzone.classList.remove('drag');
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) loadImg(f);
-  else showError('Please drop an image file.');
-});
-
-function loadImg(file) {
-  if (file.size > MAX_MB * 1024 * 1024) { showError(`Image too large (max ${MAX_MB}MB).`); return; }
-  imgMime = file.type || 'image/jpeg';
-  const reader = new FileReader();
-  reader.onload = ev => {
-    imgB64 = ev.target.result.split(',')[1];
-    previewImg.src = ev.target.result;
-    fileInfo.textContent = `${file.name} • ${(file.size/1024/1024).toFixed(2)} MB`;
-    previewArea.style.display = 'block';
-    hideResult(); errorBox.style.display = 'none';
-  };
-  reader.onerror = () => showError('Could not read image.');
-  reader.readAsDataURL(file);
-}
-
-clearBtn.addEventListener('click', () => {
-  imgB64 = null; imgMime = null;
-  previewArea.style.display = 'none'; previewImg.src = '';
-  hideResult(); errorBox.style.display = 'none';
-});
-
-textInput.addEventListener('input', () => { charCount.textContent = textInput.value.length; });
-solveBtn.addEventListener('click', () => { if (imgB64 && !isSolving) solveImage(); });
-solveTextBtn.addEventListener('click', () => { const q = textInput.value.trim(); if (q && !isSolving) solveText(q); });
-textInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { const q = textInput.value.trim(); if (q && !isSolving) solveText(q); }
-});
-document.querySelectorAll('.chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    textInput.value = chip.textContent;
-    charCount.textContent = chip.textContent.length;
-    if (!isSolving) solveText(chip.textContent);
-  });
-});
-
-/* ── UI ── */
-function showSolving() {
-  isSolving = true; solvingBox.style.display = 'block';
-  resultCard.style.display = 'none'; errorBox.style.display = 'none';
-  solveBtn.disabled = true; solveTextBtn.disabled = true;
-  solvingBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-function hideResult() { solvingBox.style.display = 'none'; resultCard.style.display = 'none'; }
-function doneSolving() { isSolving = false; solveBtn.disabled = false; solveTextBtn.disabled = false; }
-function showError(msg) {
-  isSolving = false; solvingBox.style.display = 'none';
-  errorBox.style.display = 'block'; errorBox.textContent = '⚠ ' + msg;
-  solveBtn.disabled = false; solveTextBtn.disabled = false;
-}
-
-/* ── XSS SAFE ── */
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-function safeRich(s) {
-  return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]{1,100})\*\*/g,'<strong>$1</strong>');
-}
-
-/* ── CHECK KEY ── */
-function checkKey() {
-  if (!apiKey) {
-    showError('Please enter your free Google Gemini API key above first.');
-    document.getElementById('apiKeyInput').focus();
-    document.getElementById('apiSetup').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    return false;
-  }
-  return true;
-}
-
-/* ── GEMINI API ── */
-// Try multiple models in order — fallback if one fails
-const GEMINI_MODELS = [
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-8b'
-];
-const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
-
-function buildPrompt(q) {
-  const task = q ? `Solve this math problem: ${q}` : 'Read and solve the math problem shown in this image.';
-  return `${task}
-
-Respond ONLY with valid JSON, no markdown, no extra text:
-{"problem":"restate clearly in 1 sentence","answer":"final answer concise","steps":[{"num":1,"text":"step — use backticks for expressions like \`3x+2\`, **bold** for key results"}],"explanation":"1-2 sentence method note","error":null}
-
-If unsolvable set "error" to a short message. Plain text only, no LaTeX.`;
-}
-
-async function callOneModel(model, parts) {
-  const url = `${BASE_URL}/${model}:generateContent?key=${apiKey}`;
-  const body = {
-    contents: [{ parts }],
-    generationConfig: { temperature: 0.1, maxOutputTokens: 1000 }
-  };
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    const msg = err.error?.message || '';
-    const status = res.status;
-    // Auth errors — no point retrying other models
-    if (status === 400 && msg.toLowerCase().includes('api key')) 
-      throw new Error('__FATAL__Invalid API key. Please clear and re-enter your Gemini key.');
-    if (status === 403) 
-      throw new Error('__FATAL__API key not authorized. Go to aistudio.google.com and make sure the key is active.');
-    // Rate limit or server error — try next model
-    throw new Error(`${status}: ${msg || 'model unavailable'}`);
-  }
-  const data = await res.json();
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const clean = raw.replace(/^```[a-z]*\n?/i,'').replace(/\n?```$/,'').trim();
-  let parsed = null;
-  try { parsed = JSON.parse(clean); } catch(_) {}
-  return { parsed, raw };
-}
-
-async function callGemini(parts) {
-  let lastError = '';
-  for (const model of GEMINI_MODELS) {
-    try {
-      return await callOneModel(model, parts);
-    } catch(e) {
-      if (e.message.startsWith('__FATAL__')) {
-        throw new Error(e.message.replace('__FATAL__', ''));
-      }
-      lastError = e.message;
-      // Small delay before trying next model
-      await new Promise(r => setTimeout(r, 800));
+  function updateKeyUI(saved) {
+    if(saved && apiKey) {
+      apiInput.value = '••••••••••••••••••••••';
+      apiInput.readOnly = true;
+      apiInput.classList.add('saved');
+      clearKeyBtn.style.display = 'inline-flex';
+      keyFeedback.innerHTML = '<span style="color:var(--green)">✓ API key saved — Ready!</span>';
+      apiStatusBadge.textContent = '✓ Ready';
+      apiStatusBadge.className = 'api-status ok';
+      apiSetupDiv.classList.add('has-key');
+    } else {
+      apiInput.value = '';
+      apiInput.readOnly = false;
+      apiInput.classList.remove('saved');
+      clearKeyBtn.style.display = 'none';
+      keyFeedback.innerHTML = '';
+      apiStatusBadge.textContent = '⚡ Setup needed';
+      apiStatusBadge.className = 'api-status missing';
+      apiSetupDiv.classList.remove('has-key');
     }
   }
-  // All models failed
-  if (lastError.includes('429')) {
-    throw new Error('Rate limit reached on all models. Please wait 1-2 minutes and try again.');
+
+  function loadKey() {
+    try { const stored = localStorage.getItem(STORAGE_KEY); if(stored && stored.startsWith('gsk_')) { apiKey = stored; updateKeyUI(true); } else { apiKey = ''; updateKeyUI(false); } } catch(e) { updateKeyUI(false); }
   }
-  throw new Error('Could not connect. Please check your API key and internet connection.');
-}
-
-async function solveImage() {
-  if (!checkKey()) return;
-  showSolving();
-  try {
-    const parts = [
-      { inline_data: { mime_type: imgMime, data: imgB64 } },
-      { text: buildPrompt('') }
-    ];
-    const { parsed, raw } = await callGemini(parts);
-    renderResult(parsed, raw);
-  } catch(e) { showError(e.message || 'Connection error. Please try again.'); }
-  finally { doneSolving(); }
-}
-
-async function solveText(q) {
-  if (!checkKey()) return;
-  showSolving();
-  try {
-    const { parsed, raw } = await callGemini([{ text: buildPrompt(q) }]);
-    renderResult(parsed, raw);
-  } catch(e) { showError(e.message || 'Connection error. Please try again.'); }
-  finally { doneSolving(); }
-}
-
-/* ── RENDER ── */
-function renderResult(parsed, raw) {
-  solvingBox.style.display = 'none';
-  resultCard.style.display = 'block';
-
-  if (!parsed) {
-    resultBody.innerHTML = `<div class="explanation" style="color:var(--text)">${esc(raw).replace(/\n/g,'<br>')}</div>
-      <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>`;
-    attachCopy(); resultCard.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
+  function saveKey() {
+    let raw = apiInput.value.trim();
+    if(apiInput.readOnly) { keyFeedback.innerHTML = '<span style="color:var(--orange)">Key already saved. Press Clear to change.</span>'; return; }
+    if(!raw) { keyFeedback.innerHTML = '<span style="color:var(--red)">Please paste your Groq API key</span>'; return; }
+    if(!raw.startsWith('gsk_')) { keyFeedback.innerHTML = '<span style="color:var(--orange)">⚠ Groq keys start with "gsk_" — double-check</span>'; }
+    try { localStorage.setItem(STORAGE_KEY, raw); } catch(e) {}
+    apiKey = raw;
+    updateKeyUI(true);
   }
-  if (parsed.error) {
-    resultBody.innerHTML = `<div class="explanation" style="color:var(--red)"><strong>Could not solve:</strong> ${esc(parsed.error)}</div>`;
-    resultCard.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
-  }
+  function clearKey() { try { localStorage.removeItem(STORAGE_KEY); } catch(e) {} apiKey = ''; updateKeyUI(false); apiInput.focus(); }
 
-  let stepsHtml = '';
-  if (Array.isArray(parsed.steps) && parsed.steps.length) {
-    stepsHtml = '<p class="steps-label">step-by-step solution</p>';
-    parsed.steps.forEach(s => {
-      stepsHtml += `<div class="step"><div class="step-num">${parseInt(s.num,10)||'?'}</div><div class="step-text">${safeRich(s.text||'')}</div></div>`;
+  function showError(msg) { isSolving = false; solvingBox.style.display = 'none'; errorBox.style.display = 'block'; errorBox.textContent = '⚠ ' + msg; solveBtn.disabled = false; solveTextBtn.disabled = false; }
+  function showSolving() { isSolving = true; solvingBox.style.display = 'block'; resultCard.style.display = 'none'; errorBox.style.display = 'none'; solveBtn.disabled = true; solveTextBtn.disabled = true; solvingBox.scrollIntoView({behavior:'smooth'}); }
+  function doneSolving() { isSolving = false; solveBtn.disabled = false; solveTextBtn.disabled = false; }
+  function hideResult() { solvingBox.style.display = 'none'; resultCard.style.display = 'none'; }
+
+  function checkKey() { if(!apiKey) { showError('Please set your Groq API key above.'); document.getElementById('apiSetup').scrollIntoView({behavior:'smooth'}); return false; } return true; }
+
+  function loadImage(file) {
+    if(!file.type.startsWith('image/')) { showError('Only images allowed.'); return; }
+    if(file.size > MAX_MB*1024*1024) { showError(`Max ${MAX_MB}MB`); return; }
+    imgMime = file.type;
+    const reader = new FileReader();
+    reader.onload = ev => { imgB64 = ev.target.result.split(',')[1]; previewImg.src = ev.target.result; fileInfo.textContent = `${file.name} • ${(file.size/1024/1024).toFixed(2)} MB`; previewArea.style.display = 'block'; hideResult(); errorBox.style.display = 'none'; };
+    reader.onerror = () => showError('Could not read image.');
+    reader.readAsDataURL(file);
+  }
+  function clearImage() { imgB64 = null; imgMime = null; previewArea.style.display = 'none'; previewImg.src = ''; hideResult(); errorBox.style.display = 'none'; }
+
+  async function callGroq(prompt, imageBase64 = null) {
+    const messages = [{ role: "user", content: imageBase64 ? [
+      { type: "text", text: prompt },
+      { type: "image_url", image_url: { url: `data:${imgMime||'image/jpeg'};base64,${imageBase64}` } }
+    ] : prompt }];
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "llama-3.2-90b-vision-preview", messages, temperature: 0.1, max_tokens: 1500 })
     });
+    if(!response.ok) { const err = await response.text(); throw new Error(err.substring(0,200)); }
+    const data = await response.json();
+    return data.choices[0].message.content;
   }
 
-  resultBody.innerHTML = `
-    <div class="answer-box">
-      <div class="answer-label">final answer</div>
-      <div class="answer-value">${esc(parsed.answer||'—')}</div>
-    </div>
-    ${stepsHtml}
-    ${parsed.explanation ? `<div class="explanation"><strong>Method:</strong> ${esc(parsed.explanation)}</div>` : ''}
-    <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>`;
-  attachCopy();
-  resultCard.scrollIntoView({ behavior:'smooth', block:'nearest' });
-}
+  function buildPrompt(userQuery) { return `Solve this math problem: ${userQuery}. Respond ONLY with valid JSON: {"problem":"restate","answer":"final answer","steps":[{"num":1,"text":"step with backticks for expressions like \`3x+2\`, **bold** for results"}],"explanation":"method note","error":null}. If unsolvable set "error". Plain text only.`; }
 
-function attachCopy() {
-  const btn = document.getElementById('copyBtn');
-  if (!btn) return;
-  btn.addEventListener('click', function() {
-    const text = resultBody.innerText.replace('Copy solution','').trim();
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = 'Copied ✓';
-      setTimeout(() => { btn.textContent = 'Copy solution'; }, 2000);
-    }).catch(() => { btn.textContent = 'Copy failed'; });
-  });
-}
+  async function solveWithAI(prompt, image=null) {
+    const raw = await callGroq(prompt, image);
+    const clean = raw.replace(/^```json\s*/i,'').replace(/```$/,'').trim();
+    try { return JSON.parse(clean); } catch(e) { return null; }
+  }
 
-loadKey();
+  async function solveImage() { if(!imgB64) { showError('Upload an image first.'); return; } if(!checkKey()) return; showSolving(); try { const result = await solveWithAI(buildPrompt('Read and solve the math problem in the image.'), imgB64); renderResult(result); } catch(e) { showError('API error: '+e.message); } finally { doneSolving(); } }
+  async function solveText(q) { if(!q.trim()) { showError('Type a math problem.'); return; } if(!checkKey()) return; showSolving(); try { const result = await solveWithAI(buildPrompt(q), null); renderResult(result); } catch(e) { showError('API error: '+e.message); } finally { doneSolving(); } }
+
+  function renderResult(parsed) {
+    solvingBox.style.display = 'none';
+    resultCard.style.display = 'block';
+    if(!parsed || parsed.error) { resultBody.innerHTML = `<div class="explanation" style="color:var(--red)"><strong>Error:</strong> ${esc(parsed?.error || 'Could not parse solution')}</div>`; return; }
+    let stepsHtml = '';
+    if(Array.isArray(parsed.steps)) stepsHtml = '<p class="steps-label">step-by-step solution</p>' + parsed.steps.map(s => `<div class="step"><div class="step-num">${s.num||'?'}</div><div class="step-text">${safeRich(s.text||'')}</div></div>`).join('');
+    resultBody.innerHTML = `<div class="answer-box"><div class="answer-label">final answer</div><div class="answer-value">${esc(parsed.answer||'—')}</div></div>${stepsHtml}${parsed.explanation?`<div class="explanation"><strong>Method:</strong> ${esc(parsed.explanation)}</div>`:''}<button class="btn btn-ghost" style="margin-top:1rem" id="copyBtn">Copy solution</button>`;
+    const copyBtn = document.getElementById('copyBtn'); if(copyBtn) copyBtn.onclick = () => { navigator.clipboard.writeText(resultBody.innerText.replace('Copy solution','').trim()).then(() => copyBtn.textContent='Copied!', setTimeout(()=>copyBtn.textContent='Copy solution',2000)); };
+    resultCard.scrollIntoView({behavior:'smooth'});
+  }
+
+  // Example chips
+  const examples = ["2x + 5 = 13", "∫ x² dx", "sin²(x)+cos²(x)", "Derivative of 3x³−2x²+7", "Area of circle radius 7", "x²−9=0", "Pythagorean theorem a=3,b=4", "Factor x²+5x+6"];
+  const chipsDiv = document.getElementById('exampleChips');
+  examples.forEach(ex => { const btn = document.createElement('button'); btn.className = 'chip'; btn.textContent = ex; btn.onclick = () => { textInput.value = ex; solveText(ex); }; chipsDiv.appendChild(btn); });
+
+  // Event listeners
+  saveKeyBtn.addEventListener('click', saveKey);
+  clearKeyBtn.addEventListener('click', clearKey);
+  apiInput.addEventListener('keydown', e => { if(e.key === 'Enter') saveKey(); });
+  dropzone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => { if(e.target.files[0]) loadImage(e.target.files[0]); fileInput.value = ''; });
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+  dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag'); const f = e.dataTransfer.files[0]; if(f && f.type.startsWith('image/')) loadImage(f); else showError('Drop an image.'); });
+  clearPreviewBtn.addEventListener('click', clearImage);
+  solveBtn.addEventListener('click', () => { if(imgB64) solveImage(); else showError('No image selected.'); });
+  solveTextBtn.addEventListener('click', () => solveText(textInput.value));
+  textInput.addEventListener('keydown', e => { if((e.ctrlKey||e.metaKey) && e.key === 'Enter') solveText(textInput.value); });
+
+  loadKey();
+})();
 </script>
 </body>
 </html>
