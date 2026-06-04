@@ -416,8 +416,13 @@ function checkKey() {
 }
 
 /* ── GEMINI API ── */
-const GEMINI_MODEL = 'gemini-2.0-flash';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+// Try multiple models in order — fallback if one fails
+const GEMINI_MODELS = [
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b'
+];
+const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 function buildPrompt(q) {
   const task = q ? `Solve this math problem: ${q}` : 'Read and solve the math problem shown in this image.';
@@ -429,8 +434,8 @@ Respond ONLY with valid JSON, no markdown, no extra text:
 If unsolvable set "error" to a short message. Plain text only, no LaTeX.`;
 }
 
-async function callGemini(parts) {
-  const url = `${GEMINI_URL}?key=${apiKey}`;
+async function callOneModel(model, parts) {
+  const url = `${BASE_URL}/${model}:generateContent?key=${apiKey}`;
   const body = {
     contents: [{ parts }],
     generationConfig: { temperature: 0.1, maxOutputTokens: 1000 }
@@ -443,10 +448,14 @@ async function callGemini(parts) {
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     const msg = err.error?.message || '';
-    if (res.status === 400 && msg.includes('API_KEY')) throw new Error('Invalid API key. Please check and re-enter your Gemini key.');
-    if (res.status === 429) throw new Error('Too many requests. Please wait a moment and try again.');
-    if (res.status === 403) throw new Error('API key not authorized. Make sure Gemini API is enabled in Google AI Studio.');
-    throw new Error(msg || `Error ${res.status}`);
+    const status = res.status;
+    // Auth errors — no point retrying other models
+    if (status === 400 && msg.toLowerCase().includes('api key')) 
+      throw new Error('__FATAL__Invalid API key. Please clear and re-enter your Gemini key.');
+    if (status === 403) 
+      throw new Error('__FATAL__API key not authorized. Go to aistudio.google.com and make sure the key is active.');
+    // Rate limit or server error — try next model
+    throw new Error(`${status}: ${msg || 'model unavailable'}`);
   }
   const data = await res.json();
   const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -454,6 +463,27 @@ async function callGemini(parts) {
   let parsed = null;
   try { parsed = JSON.parse(clean); } catch(_) {}
   return { parsed, raw };
+}
+
+async function callGemini(parts) {
+  let lastError = '';
+  for (const model of GEMINI_MODELS) {
+    try {
+      return await callOneModel(model, parts);
+    } catch(e) {
+      if (e.message.startsWith('__FATAL__')) {
+        throw new Error(e.message.replace('__FATAL__', ''));
+      }
+      lastError = e.message;
+      // Small delay before trying next model
+      await new Promise(r => setTimeout(r, 800));
+    }
+  }
+  // All models failed
+  if (lastError.includes('429')) {
+    throw new Error('Rate limit reached on all models. Please wait 1-2 minutes and try again.');
+  }
+  throw new Error('Could not connect. Please check your API key and internet connection.');
 }
 
 async function solveImage() {
