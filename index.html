@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>MathSnap – Ultimate Free Math Solver</title>
-  <meta name="description" content="Step-by-step math solver. Upload photo or type problem. Powered by Groq AI. 100% free.">
+  <title>MathSnap – Free Advanced Math Solver</title>
   <style>
     * {
       margin: 0;
@@ -14,81 +13,61 @@
     body {
       background: #0a0a0f;
       color: #f0eeff;
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-      line-height: 1.5;
-      padding: 1.5rem 1rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 1.2rem;
     }
     .container {
-      max-width: 1000px;
+      max-width: 900px;
       margin: 0 auto;
     }
-    /* header */
     .header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.8rem;
     }
     .header h1 {
-      font-size: 2.2rem;
+      font-size: 2rem;
       background: linear-gradient(135deg, #c084fc, #7c6af7);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      letter-spacing: -0.02em;
     }
-    .header p {
-      color: #8b87aa;
-      margin-top: 0.25rem;
-    }
-    /* mini api card */
     .api-mini {
       background: #13131a;
-      border: 1px solid #2a2a3a;
-      border-radius: 20px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 2rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      gap: 12px;
-      justify-content: space-between;
-    }
-    .api-mini-left {
+      border-radius: 28px;
+      padding: 0.9rem 1.2rem;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
-      flex: 2;
+      margin-bottom: 1.8rem;
+      border: 1px solid #2a2a3a;
     }
-    .api-mini-left label {
+    .api-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .api-left label {
       font-size: 0.75rem;
-      font-family: monospace;
-      color: #a78bfa;
       background: #1c1c26;
-      padding: 0.2rem 0.7rem;
+      padding: 0.2rem 0.8rem;
       border-radius: 40px;
+      color: #a78bfa;
     }
-    .api-mini-left input {
+    .api-left input {
       background: #1c1c26;
       border: 1px solid #2a2a3a;
       border-radius: 40px;
-      padding: 0.6rem 1rem;
+      padding: 0.5rem 1rem;
+      width: 260px;
       color: white;
       font-family: monospace;
-      font-size: 0.85rem;
-      width: 260px;
       outline: none;
-      transition: 0.2s;
     }
-    .api-mini-left input:focus {
+    .api-left input:focus {
       border-color: #7c6af7;
-    }
-    .api-mini-left input.saved {
-      border-color: #4ade80;
-      opacity: 0.9;
-    }
-    .api-buttons {
-      display: flex;
-      gap: 8px;
     }
     button {
       background: #2a2a3a;
@@ -96,94 +75,43 @@
       border-radius: 40px;
       padding: 0.5rem 1.2rem;
       font-weight: 600;
-      font-size: 0.8rem;
       cursor: pointer;
-      transition: 0.15s;
       color: white;
+      transition: 0.1s;
     }
     button.primary {
       background: #7c6af7;
     }
     button.primary:hover {
-      background: #6a58e0;
-      transform: scale(0.97);
+      background: #5f4ad9;
     }
     button.outline {
       background: transparent;
       border: 1px solid #4a4a5a;
     }
-    button.outline:hover {
-      border-color: #7c6af7;
-      color: #c084fc;
-    }
-    /* big upload zone */
-    .upload-zone {
+    .text-card {
       background: #13131a;
-      border: 2px dashed #3a3a4a;
       border-radius: 32px;
-      padding: 3rem 1.5rem;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-bottom: 1.8rem;
-    }
-    .upload-zone:hover {
-      border-color: #7c6af7;
-      background: #16161f;
-    }
-    .upload-icon {
-      font-size: 3rem;
-      margin-bottom: 0.75rem;
-    }
-    .upload-zone h3 {
-      font-size: 1.2rem;
-      font-weight: 500;
-    }
-    .upload-zone p {
-      color: #8b87aa;
-      font-size: 0.85rem;
-      margin-top: 4px;
-    }
-    .preview-area {
-      background: #0f0f14;
-      border-radius: 24px;
-      padding: 1rem;
-      margin-top: 1rem;
-      display: none;
-      text-align: center;
-    }
-    .preview-img {
-      max-width: 100%;
-      max-height: 260px;
-      border-radius: 20px;
+      padding: 1.5rem;
+      margin: 1rem 0;
       border: 1px solid #2a2a3a;
-    }
-    .text-input-area {
-      background: #13131a;
-      border-radius: 28px;
-      padding: 1.2rem;
-      margin: 1.5rem 0;
     }
     textarea {
       width: 100%;
       background: #1c1c26;
       border: 1px solid #2a2a3a;
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 1rem;
       color: white;
       font-size: 1rem;
       font-family: 'SF Mono', monospace;
       resize: vertical;
-      outline: none;
     }
-    textarea:focus {
-      border-color: #7c6af7;
-    }
-    .chip-container {
+    .chip-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin: 1.5rem 0 1rem;
+      gap: 10px;
+      margin: 1rem 0;
     }
     .chip {
       background: #1c1c26;
@@ -192,240 +120,184 @@
       padding: 0.4rem 1rem;
       font-size: 0.8rem;
       cursor: pointer;
-      transition: 0.1s;
     }
     .chip:hover {
       background: #2a2a3a;
       border-color: #7c6af7;
     }
-    /* result card */
-    .result-card {
-      background: #13131a;
-      border-radius: 28px;
-      padding: 1.5rem;
-      margin-top: 1.5rem;
-      display: none;
-      border: 1px solid #2a2a3a;
-    }
-    .result-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid #2a2a3a;
-      padding-bottom: 0.75rem;
-      margin-bottom: 1.25rem;
-    }
-    .result-header .dot {
-      width: 10px;
-      height: 10px;
-      background: #4ade80;
-      border-radius: 50%;
-    }
-    .step-box {
-      margin-bottom: 1rem;
-      padding-left: 0.5rem;
-      border-left: 2px solid #7c6af7;
-    }
-    .step-num {
-      font-weight: 700;
-      color: #c084fc;
-      margin-right: 0.75rem;
-    }
-    .final-answer {
-      background: #0f0f18;
-      border-radius: 20px;
-      padding: 1rem;
-      margin: 1rem 0;
-      text-align: center;
-      border: 1px solid #f0c04030;
-    }
-    .final-answer span {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #f0c040;
-      font-family: monospace;
-    }
-    .copy-btn {
-      background: #2a2a3a;
-      margin-top: 1rem;
-      width: 100%;
-    }
     .loader {
       display: none;
       text-align: center;
-      padding: 2rem;
+      margin: 1.5rem 0;
     }
     .spinner {
+      width: 38px;
+      height: 38px;
       border: 3px solid #2a2a3a;
-      border-top: 3px solid #7c6af7;
+      border-top-color: #7c6af7;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 0.7s linear infinite;
-      margin: 0 auto 1rem;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto 0.5rem;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .result-card {
+      background: #13131a;
+      border-radius: 28px;
+      padding: 1.4rem;
+      margin-top: 1.5rem;
+      border: 1px solid #2a2a3a;
+      display: none;
+    }
+    .answer-highlight {
+      background: #0f0f1a;
+      border-left: 4px solid #f0c040;
+      padding: 1rem;
+      border-radius: 20px;
+      margin: 0.8rem 0;
+    }
+    .final-answer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f0c040;
+      word-break: break-word;
+    }
+    .step {
+      margin-bottom: 0.8rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid #7c6af7;
+    }
+    .copy-btn {
+      margin-top: 1.2rem;
+      width: 100%;
+      background: #2a2a3a;
+    }
     .error-box {
       background: #f8717110;
       border: 1px solid #f8717130;
       border-radius: 20px;
-      padding: 1rem;
+      padding: 0.8rem;
       color: #f87171;
       display: none;
-      margin-top: 1rem;
+      margin: 0.8rem 0;
     }
     footer {
       text-align: center;
       color: #5a5a7a;
-      margin-top: 3rem;
-      font-size: 0.75rem;
+      margin-top: 2rem;
+      font-size: 0.7rem;
     }
     @media (max-width: 640px) {
-      .api-mini {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .api-mini-left {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .api-mini-left input {
-        width: 100%;
-      }
-      .upload-zone {
-        padding: 2rem 1rem;
-      }
+      .api-mini { flex-direction: column; align-items: stretch; }
+      .api-left { flex-direction: column; align-items: stretch; }
+      .api-left input { width: 100%; }
     }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <h1>📐 MathSnap</h1>
-    <p>Step‑by‑step solutions · Photo or text · 100% free</p>
+    <h1>🧮 MathSnap</h1>
+    <p>Step-by-step solutions · Type any problem · 100% free</p>
   </div>
 
-  <!-- MINI API KEY SECTION (only needed) -->
-  <div class="api-mini" id="apiMini">
-    <div class="api-mini-left">
+  <!-- API Key section (compact) -->
+  <div class="api-mini">
+    <div class="api-left">
       <label>🔑 Groq API Key</label>
-      <input type="password" id="apiKeyInput" placeholder="gsk_..." autocomplete="off" spellcheck="false">
-      <div id="keyStatus" style="font-size:0.7rem; color:#8b87aa;"></div>
+      <input type="password" id="apiKeyInput" placeholder="gsk_...">
+      <span id="keyStatus" style="font-size:0.7rem;"></span>
     </div>
-    <div class="api-buttons">
-      <button id="saveKeyBtn" class="primary">Save Key</button>
+    <div>
+      <button id="saveKeyBtn" class="primary">Save</button>
       <button id="clearKeyBtn" class="outline">Clear</button>
     </div>
   </div>
 
-  <!-- BIG UPLOAD ZONE -->
-  <div class="upload-zone" id="dropzone">
-    <div class="upload-icon">📸</div>
-    <h3>Drop your math problem image here</h3>
-    <p>PNG, JPG, WEBP · Drag & drop or click to browse</p>
-  </div>
-  <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" style="display:none">
-  <div class="preview-area" id="previewArea">
-    <img id="previewImg" class="preview-img" alt="preview">
-    <div style="margin-top: 10px; display: flex; gap: 8px; justify-content: center;">
-      <button id="solveImageBtn" class="primary">✦ Solve this image</button>
-      <button id="clearImageBtn" class="outline">Clear</button>
+  <!-- Text input area (main) -->
+  <div class="text-card">
+    <textarea id="mathProblem" rows="3" placeholder="Type any math problem...&#10;Example: 8 ÷ 2(2+2)   |   ∫₀¹ x² dx   |   derivative of e^{2x}   |   solve 3x²+5x-2=0"></textarea>
+    <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+      <button id="solveBtn" class="primary">✦ Solve Step-by-Step</button>
     </div>
   </div>
 
-  <!-- TEXT INPUT + EXAMPLE CHIPS -->
-  <div class="text-input-area">
-    <textarea id="textProblem" rows="2" placeholder="Type any math problem...&#10;Example: 2x + 5 = 13   |   ∫ x² dx   |   derivative of 3x³   |   area of circle radius 7"></textarea>
-    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-      <button id="solveTextBtn" class="primary">✦ Solve</button>
-    </div>
-  </div>
+  <!-- Example chips (rich examples) -->
+  <div class="chip-grid" id="exampleList"></div>
 
-  <div class="chip-container" id="exampleChips"></div>
-
-  <!-- LOADING & ERROR -->
+  <!-- Loader & error -->
   <div class="loader" id="loader"><div class="spinner"></div><div>Solving with AI ...</div></div>
   <div class="error-box" id="errorBox"></div>
 
-  <!-- RESULT CARD (step by step + answer + copy) -->
+  <!-- Result card -->
   <div class="result-card" id="resultCard">
-    <div class="result-header"><div class="dot"></div><h3>📘 Full Solution</h3></div>
-    <div id="solutionBody"></div>
-    <button id="copyFullSolutionBtn" class="copy-btn outline" style="display: none;">📋 Copy full solution</button>
+    <div style="font-weight: 600; margin-bottom: 0.8rem;">📘 Full Solution</div>
+    <div id="solutionSteps"></div>
+    <div class="answer-highlight" id="answerBlock" style="display: none;">
+      <div style="font-size: 0.8rem; color: #aaa;">✔ FINAL ANSWER</div>
+      <div class="final-answer" id="finalAnswerSpan"></div>
+    </div>
+    <button id="copySolutionBtn" class="copy-btn outline">📋 Copy Full Solution</button>
   </div>
 
-  <footer>⚡ Powered by Groq (Llama 3) · No credit card needed · Your API key stays in browser</footer>
+  <footer>⚡ Powered by Groq Llama 3 (text model) · No credit card · API key stored locally</footer>
 </div>
 
 <script>
-  // ---------- GROQ FREE API (working models June 2026) ----------
+  // ------------------- CONFIG -------------------
   const STORAGE_KEY = 'mathsnap_groq_key';
   let apiKey = '';
-  let currentImageBase64 = null;
-  let currentImageMime = null;
   let isSolving = false;
 
-  // Latest stable models
-  const TEXT_MODEL = 'llama-3.3-70b-versatile';
-  const VISION_MODEL = 'llama-3.2-11b-vision-preview';
+  const TEXT_MODEL = 'llama-3.3-70b-versatile';  // fastest, most accurate math
 
   // DOM elements
   const apiInput = document.getElementById('apiKeyInput');
   const saveBtn = document.getElementById('saveKeyBtn');
-  const clearKeyBtn = document.getElementById('clearKeyBtn');
-  const keyStatusSpan = document.getElementById('keyStatus');
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('fileInput');
-  const previewArea = document.getElementById('previewArea');
-  const previewImg = document.getElementById('previewImg');
-  const solveImageBtn = document.getElementById('solveImageBtn');
-  const clearImageBtn = document.getElementById('clearImageBtn');
-  const textProblem = document.getElementById('textProblem');
-  const solveTextBtn = document.getElementById('solveTextBtn');
+  const clearBtn = document.getElementById('clearKeyBtn');
+  const keyStatus = document.getElementById('keyStatus');
+  const problemTextarea = document.getElementById('mathProblem');
+  const solveBtn = document.getElementById('solveBtn');
   const loader = document.getElementById('loader');
   const errorBox = document.getElementById('errorBox');
   const resultCard = document.getElementById('resultCard');
-  const solutionBody = document.getElementById('solutionBody');
-  const copyBtnFull = document.getElementById('copyFullSolutionBtn');
+  const solutionStepsDiv = document.getElementById('solutionSteps');
+  const answerBlock = document.getElementById('answerBlock');
+  const finalAnswerSpan = document.getElementById('finalAnswerSpan');
+  const copyBtn = document.getElementById('copySolutionBtn');
 
-  // Helper: sanitize HTML
+  // Helper: escape HTML
   function escapeHtml(str) {
     return str.replace(/[&<>]/g, function(m) {
       if (m === '&') return '&amp;';
       if (m === '<') return '&lt;';
       if (m === '>') return '&gt;';
       return m;
-    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-      return c;
-    });
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, c => c);
   }
 
-  // format math style (backticks -> code, ** -> strong)
-  function formatMath(text) {
+  // format special markers: **bold** and `code`
+  function formatText(text) {
     let t = escapeHtml(text);
     t = t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     t = t.replace(/`(.*?)`/g, '<code style="background:#1e1e2a;padding:2px 6px;border-radius:8px;">$1</code>');
-    t = t.replace(/\\\((.*?)\\\)/g, '<span style="font-family:monospace;color:#f0c040;">$1</span>');
     return t;
   }
 
-  // ----- API KEY management -----
+  // ----- API Key management -----
   function updateKeyUI() {
     if (apiKey && apiKey.startsWith('gsk_')) {
       apiInput.value = '••••••••••••••••';
       apiInput.disabled = true;
-      apiInput.classList.add('saved');
-      keyStatusSpan.innerHTML = '✅ ready';
-      clearKeyBtn.style.display = 'inline-block';
+      keyStatus.innerHTML = '✅ ready';
+      clearBtn.style.display = 'inline-block';
     } else {
       apiInput.value = '';
       apiInput.disabled = false;
-      apiInput.classList.remove('saved');
-      keyStatusSpan.innerHTML = '';
-      clearKeyBtn.style.display = 'inline-block';
+      keyStatus.innerHTML = '';
+      clearBtn.style.display = 'inline-block';
     }
   }
-  function loadKeyFromStorage() {
+  function loadKey() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved && saved.startsWith('gsk_')) {
@@ -440,15 +312,15 @@
   function saveApiKey() {
     let val = apiInput.value.trim();
     if (apiInput.disabled) {
-      keyStatusSpan.innerHTML = '⚠️ already saved, press Clear to change';
+      keyStatus.innerHTML = '❌ already saved, press Clear first';
       return;
     }
-    if (!val) { keyStatusSpan.innerHTML = '❌ paste Groq key'; return; }
-    if (!val.startsWith('gsk_')) { keyStatusSpan.innerHTML = '❌ key must start with gsk_'; return; }
+    if (!val) { keyStatus.innerHTML = '❌ paste Groq key'; return; }
+    if (!val.startsWith('gsk_')) { keyStatus.innerHTML = '❌ key must start with gsk_'; return; }
     try { localStorage.setItem(STORAGE_KEY, val); } catch(e) {}
     apiKey = val;
     updateKeyUI();
-    keyStatusSpan.innerHTML = '✅ saved';
+    keyStatus.innerHTML = '✓ saved';
   }
   function clearApiKey() {
     try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
@@ -457,45 +329,20 @@
     apiInput.disabled = false;
     apiInput.value = '';
     apiInput.focus();
-    keyStatusSpan.innerHTML = 'cleared';
+    keyStatus.innerHTML = 'cleared';
   }
 
-  // ----- Image handling (big zone) -----
-  function handleImageFile(file) {
-    if (!file.type.startsWith('image/')) { alert('Only images'); return; }
-    if (file.size > 6 * 1024 * 1024) { alert('Max 6MB'); return; }
-    currentImageMime = file.type;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      currentImageBase64 = e.target.result.split(',')[1];
-      previewImg.src = e.target.result;
-      previewArea.style.display = 'block';
-      errorBox.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
-  }
-  function clearImage() {
-    currentImageBase64 = null;
-    previewArea.style.display = 'none';
-    previewImg.src = '';
-  }
-
-  // ----- Groq API call (supports vision & text) -----
-  async function callGroq(prompt, imageBase64 = null) {
-    const isVision = (imageBase64 !== null);
-    const model = isVision ? VISION_MODEL : TEXT_MODEL;
-    const messages = isVision ? [{
-      role: "user",
-      content: [
-        { type: "text", text: prompt },
-        { type: "image_url", image_url: { url: `data:${currentImageMime || 'image/jpeg'};base64,${imageBase64}` } }
-      ]
-    }] : [{ role: "user", content: prompt }];
-    
+  // ----- Groq API call (text only) -----
+  async function callGroq(prompt) {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model, messages, temperature: 0.1, max_tokens: 2000 })
+      body: JSON.stringify({
+        model: TEXT_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.1,
+        max_tokens: 2000
+      })
     });
     if (!response.ok) {
       const errText = await response.text();
@@ -505,83 +352,75 @@
     return data.choices[0].message.content;
   }
 
-  // Build prompt: ask for step-by-step and final answer
-  function buildMathPrompt(question) {
-    return `You are a world-class math tutor. Solve this math problem step by step: "${question}"
-
-Return ONLY valid JSON with this exact structure:
+  // Build prompt to enforce step-by-step + final answer
+  function buildPrompt(question) {
+    return `You are an expert math tutor. Solve the following math problem completely, step by step. 
+Return ONLY valid JSON in this exact format:
 {
   "steps": [
-    { "step_number": 1, "description": "first step with explanation" },
-    { "step_number": 2, "description": "second step" }
+    { "step_number": 1, "description": "First step explanation" },
+    { "step_number": 2, "description": "Second step" }
   ],
-  "final_answer": "the final numeric or simplified answer",
-  "full_solution_text": "optional combined text"
+  "final_answer": "the final simplified answer"
 }
-Make sure the solution is complete, rigorous and shows every logical step. The final answer must be clearly stated. Use plain text but you can use **bold** for emphasis and \`code\` for expressions.`;
+The problem: "${question}"
+Make sure every logical step is shown. Use **bold** for key results and \`backticks\` for expressions. The final answer must be clear and exact.`;
   }
 
-  async function solveMathProblem(question, imageBase64 = null) {
-    const prompt = buildMathPrompt(question);
-    const rawOutput = await callGroq(prompt, imageBase64);
+  async function solveProblem(question) {
+    const prompt = buildPrompt(question);
+    const raw = await callGroq(prompt);
     // extract JSON
-    let jsonStr = rawOutput.replace(/```json/gi, '').replace(/```/g, '').trim();
+    let jsonStr = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
     const match = jsonStr.match(/\{[\s\S]*\}/);
     if (match) jsonStr = match[0];
     return JSON.parse(jsonStr);
   }
 
-  // Display result: complete step-by-step and final answer
+  // Render solution steps + final answer
   function renderSolution(data) {
     let stepsHtml = '';
     if (data.steps && Array.isArray(data.steps) && data.steps.length) {
-      stepsHtml = '<div style="margin-bottom: 1.2rem;">';
       for (let step of data.steps) {
-        const stepNum = step.step_number || (data.steps.indexOf(step)+1);
+        const num = step.step_number || (data.steps.indexOf(step)+1);
         const desc = step.description || step.text || '';
-        stepsHtml += `<div class="step-box"><span class="step-num">${stepNum}.</span> ${formatMath(desc)}</div>`;
+        stepsHtml += `<div class="step"><strong>${num}.</strong> ${formatText(desc)}</div>`;
       }
-      stepsHtml += '</div>';
-    } else if (data.full_solution_text) {
-      stepsHtml = `<div class="step-box">${formatMath(data.full_solution_text)}</div>`;
     } else {
-      stepsHtml = '<div class="step-box">✅ Solution computed</div>';
+      stepsHtml = '<div class="step">✓ Solution received (no detailed steps)</div>';
     }
-    const finalAnswer = data.final_answer || data.answer || '✔️ solved';
-    const finalHtml = `
-      ${stepsHtml}
-      <div class="final-answer">
-        📌 <strong>Final Answer:</strong><br>
-        <span>${escapeHtml(finalAnswer)}</span>
-      </div>
-    `;
-    solutionBody.innerHTML = finalHtml;
-    copyBtnFull.style.display = 'block';
+    solutionStepsDiv.innerHTML = stepsHtml;
+    if (data.final_answer) {
+      finalAnswerSpan.innerHTML = formatText(data.final_answer);
+      answerBlock.style.display = 'block';
+    } else {
+      answerBlock.style.display = 'none';
+    }
     resultCard.style.display = 'block';
   }
 
-  async function handleSolve(question, imageBase64 = null) {
+  async function handleSolve() {
     if (!apiKey) {
-      errorBox.innerText = '❌ Please set your Groq API key first (above). Get free key from console.groq.com/keys';
+      errorBox.innerText = '❌ Please set your Groq API key (free from console.groq.com/keys)';
       errorBox.style.display = 'block';
       return;
     }
-    if (!question || question.trim() === '') {
-      errorBox.innerText = '⚠️ Please type a math problem or upload an image.';
+    const problem = problemTextarea.value.trim();
+    if (!problem) {
+      errorBox.innerText = '⚠️ Please type a math problem.';
       errorBox.style.display = 'block';
       return;
     }
     errorBox.style.display = 'none';
     resultCard.style.display = 'none';
-    copyBtnFull.style.display = 'none';
     loader.style.display = 'block';
     isSolving = true;
     try {
-      const result = await solveMathProblem(question, imageBase64);
+      const result = await solveProblem(problem);
       renderSolution(result);
     } catch (err) {
       let msg = err.message;
-      if (msg.includes('decommissioned')) msg = 'Model updated automatically – please retry.';
+      if (msg.includes('decommissioned') || msg.includes('model')) msg = 'Model temporarily unavailable. Please retry in a few seconds.';
       errorBox.innerText = `⚠️ ${msg}`;
       errorBox.style.display = 'block';
     } finally {
@@ -590,64 +429,50 @@ Make sure the solution is complete, rigorous and shows every logical step. The f
     }
   }
 
-  // copy full solution + final answer
+  // Copy full solution (steps + final answer)
   function copyFullSolution() {
-    const answerElem = document.querySelector('#solutionBody .final-answer span');
-    const stepsElems = document.querySelectorAll('#solutionBody .step-box');
-    let copyText = '';
-    stepsElems.forEach(el => { copyText += el.innerText + '\n'; });
-    if (answerElem) copyText += '\nFinal Answer: ' + answerElem.innerText;
-    navigator.clipboard.writeText(copyText.trim()).then(() => {
-      const original = copyBtnFull.innerText;
-      copyBtnFull.innerText = '✓ Copied!';
-      setTimeout(() => { copyBtnFull.innerText = original; }, 2000);
+    let stepsText = '';
+    const stepDivs = document.querySelectorAll('#solutionSteps .step');
+    stepDivs.forEach(div => { stepsText += div.innerText + '\n'; });
+    let finalText = '';
+    const finalSpan = document.getElementById('finalAnswerSpan');
+    if (finalSpan && finalSpan.innerText) finalText = 'Final Answer: ' + finalSpan.innerText;
+    const full = stepsText + '\n' + finalText;
+    navigator.clipboard.writeText(full.trim()).then(() => {
+      const original = copyBtn.innerText;
+      copyBtn.innerText = '✓ Copied!';
+      setTimeout(() => { copyBtn.innerText = original; }, 2000);
     }).catch(() => alert('Could not copy'));
   }
 
-  // ----- Event listeners -----
-  saveBtn.addEventListener('click', saveApiKey);
-  clearKeyBtn.addEventListener('click', clearApiKey);
-  apiInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveApiKey(); });
-
-  // Upload zone
-  dropzone.addEventListener('click', () => fileInput.click());
-  fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleImageFile(e.target.files[0]); fileInput.value = ''; });
-  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.borderColor = '#7c6af7'; });
-  dropzone.addEventListener('dragleave', (e) => { dropzone.style.borderColor = '#3a3a4a'; });
-  dropzone.addEventListener('drop', (e) => {
-    e.preventDefault(); dropzone.style.borderColor = '#3a3a4a';
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith('image/')) handleImageFile(f);
-    else alert('Drop an image file');
-  });
-  solveImageBtn.addEventListener('click', () => {
-    if (currentImageBase64) handleSolve('solve the math problem visible in this image', currentImageBase64);
-    else alert('No image loaded');
-  });
-  clearImageBtn.addEventListener('click', clearImage);
-  solveTextBtn.addEventListener('click', () => handleSolve(textProblem.value, null));
-  copyBtnFull.addEventListener('click', copyFullSolution);
-
-  // Example chips (full variety)
+  // ----- Load examples -----
   const examples = [
-    "2x + 5 = 13", "∫ x² dx", "Derivative of 3x³ − 2x² + 7", "Area of circle radius 7",
-    "x² − 9 = 0", "Pythagorean theorem: a=3, b=4", "Factor x² + 5x + 6",
-    "Solve quadratic: 2x² + 5x - 3 = 0", "∫ sin(x) cos(x) dx"
+    "8 ÷ 2(2+2)", "2x + 5 = 13", "∫ x² dx", "Derivative of 3x³−2x²+7",
+    "Area of circle radius 7", "x²−9=0", "Pythagorean theorem a=3,b=4",
+    "Factor x²+5x+6", "Solve 2x²+5x−3=0", "∫ sin(x) cos(x) dx"
   ];
-  const chipContainer = document.getElementById('exampleChips');
+  const chipContainer = document.getElementById('exampleList');
   examples.forEach(ex => {
     const chip = document.createElement('button');
     chip.className = 'chip';
-    chip.innerText = ex.length > 28 ? ex.slice(0,25)+'…' : ex;
+    chip.innerText = ex;
     chip.addEventListener('click', () => {
-      textProblem.value = ex;
-      handleSolve(ex);
+      problemTextarea.value = ex;
+      handleSolve();
     });
     chipContainer.appendChild(chip);
   });
 
-  // initial load key
-  loadKeyFromStorage();
+  // Event listeners
+  saveBtn.addEventListener('click', saveApiKey);
+  clearBtn.addEventListener('click', clearApiKey);
+  solveBtn.addEventListener('click', handleSolve);
+  copyBtn.addEventListener('click', copyFullSolution);
+  problemTextarea.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') handleSolve();
+  });
+
+  loadKey();
 </script>
 </body>
 </html>
