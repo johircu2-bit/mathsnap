@@ -1,219 +1,245 @@
-import streamlit as st
-import sympy as sp
-from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_xor
-import pytesseract
-from PIL import Image
-import re
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ম্যাথ সলভার (HTML+JS) – টেক্সট ও ইমেজ</title>
+    <!-- Tesseract.js for OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <!-- Nerdamer for symbolic math (ডেরিভেটিভ, সরলীকরণ, সমীকরণ সমাধান) -->
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.9/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.9/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.9/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.9/Solve.js"></script>
+    <!-- Math.js (পাটিগণিত ও সংখ্যাসূচক) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.7.0/math.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        h1 { color: #2c3e50; }
+        .tab { display: flex; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
+        .tab button {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .tab button.active { background: #3498db; color: white; border-radius: 8px 8px 0 0; }
+        .tabcontent { display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .tabcontent.active { display: block; }
+        input, textarea, button, .upload-area {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background: #27ae60;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover { background: #2ecc71; }
+        .result {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .error { color: #e74c3c; }
+        .upload-area {
+            border: 2px dashed #3498db;
+            background: #ecf9ff;
+            text-align: center;
+            cursor: pointer;
+        }
+        img { max-width: 100%; margin-top: 10px; border-radius: 8px; }
+        small { color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<h1>🧠 সর্বজনীন গণিত সমাধানকারী (HTML + JS)</h1>
+<p>টেক্সট বা ছবি আপলোড করুন। <strong>সীমাবদ্ধতা:</strong> জটিল ক্যালকুলাস ও ম্যাট্রিক্সের কিছু অংশ কাজ নাও করতে পারে।</p>
 
-# ========== কনফিগারেশন ==========
-# Tesseract-এর পাথ (উইন্ডোজে দরকার; ম্যাক/লিনাক্সে কমেন্ট করুন)
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+<div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'Text')" id="defaultOpen">✍️ টেক্সট ইনপুট</button>
+    <button class="tablinks" onclick="openTab(event, 'Image')">🖼️ ইমেজ আপলোড</button>
+</div>
 
-st.set_page_config(page_title="সর্বজনীন গণিত সমাধানকারী", page_icon="🧮", layout="centered")
+<!-- টেক্সট ট্যাব -->
+<div id="Text" class="tabcontent">
+    <label>গাণিতিক সমস্যা লিখুন:</label>
+    <textarea id="mathInput" rows="3" placeholder="যেমন: 8 ÷ 2(2+2)&#10;2x + 5 = 13&#10;derivative of x^3&#10;integrate x^2&#10;factor x^2+5x+6"></textarea>
+    <button onclick="solveText()">🔍 সমাধান করুন</button>
+    <div id="textResult" class="result"></div>
+    <small>📘 উদাহরণ: 2+3*4, 8/2(2+2), x^2-5x+6=0, diff(x^3,x), integrate(x^2), derivative of sin(x), factor(x^2+5x+6)</small>
+</div>
 
-# ========== হেলপার ফাংশন ==========
-def preprocess_math_expression(expr_str: str) -> str:
-    """
-    ব্যবহারকারীর টেক্সটকে SymPy-উপযোগী স্ট্রিং-এ রূপান্তর করে।
-    যেমন: 8 ÷ 2(2+2) -> 8/(2*(2+2))
-    """
-    # ÷ এবং : চিহ্নকে / তে রূপান্তর
-    expr_str = expr_str.replace('÷', '/').replace(':', '/')
-    # ইমপ্লিসিট গুণ (যেমন 2(2+2) -> 2*(2+2))
-    expr_str = re.sub(r'(\d)(\()', r'\1*\2', expr_str)
-    expr_str = re.sub(r'(\))(\d)', r'\1*\2', expr_str)
-    expr_str = re.sub(r'(\))(\()', r'\1*\2', expr_str)
-    # ^ কে ** তে রূপান্তর (পাওয়ার)
-    expr_str = expr_str.replace('^', '**')
-    # x² এর মতো ক্ষেত্রে (ইউনিকোড সুপারস্ক্রিপ্ট) হ্যান্ডলিং
-    sup_map = {'⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5',
-               '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9'}
-    for sup, digit in sup_map.items():
-        expr_str = expr_str.replace(sup, f'**{digit}')
-    return expr_str
+<!-- ইমেজ ট্যাব -->
+<div id="Image" class="tabcontent">
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageInput').click()">
+        📸 ছবি নির্বাচন করুন বা এখানে ক্লিক করুন
+        <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="previewImage(event)">
+    </div>
+    <div id="imagePreview"></div>
+    <button onclick="solveImage()">🖼️ ছবি থেকে সমাধান করুন</button>
+    <div id="imageResult" class="result"></div>
+    <small>ছবির মধ্যে হাতে লেখা বা মুদ্রিত গণিতের এক্সপ্রেশন থাকতে হবে।</small>
+</div>
 
-def solve_math(problem: str) -> str:
-    """
-    যেকোনো গাণিতিক সমস্যা SymPy দিয়ে সমাধান করে।
-    রিটার্ন করে সুন্দর ফরম্যাটেড উত্তর।
-    """
-    problem = problem.strip()
-    if not problem:
-        return "⚠️ দয়া করে একটি গাণিতিক সমস্যা লিখুন।"
-    
-    # প্রি-প্রসেসিং
-    try:
-        expr_str = preprocess_math_expression(problem)
-    except Exception as e:
-        return f"❌ প্রি-প্রসেসিং ব্যর্থ: {str(e)}"
-    
-    # SymPy ট্রান্সফরমেশন (ইমপ্লিসিট গুণের জন্য)
-    transformations = standard_transformations + (implicit_multiplication_application, convert_xor)
-    
-    # সমস্যার ধরন শনাক্ত করে উপযুক্ত অপারেশন
-    try:
-        # 1) সমীকরণ কিনা (একটি '=' চিহ্ন আছে?)
-        if '=' in expr_str and not expr_str.startswith('=='):
-            # সমীকরণ সমাধান
-            left, right = expr_str.split('=', 1)
-            lhs = parse_expr(left, transformations=transformations)
-            rhs = parse_expr(right, transformations=transformations)
-            eqn = sp.Eq(lhs, rhs)
-            # চলক (ভেরিয়েবল) বের করি
-            vars = list(eqn.free_symbols)
-            if not vars:
-                return f"🔍 সমীকরণে কোনো চলক নেই। ধ্রুবক: {sp.simplify(eqn)}"
-            sol = sp.solve(eqn, vars[0])
-            if sol:
-                return f"✅ সমাধান: {vars[0]} = {sol}"
-            else:
-                return "⚠️ সমাধান পাওয়া যায়নি (সমীকরণটি অমীমাংসিত অথবা কোনও বাস্তব সমাধান নেই)।"
+<script>
+    // ট্যাব খোলার ফাংশন
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+    document.getElementById("defaultOpen").click();
+
+    // প্রিভিউ ইমেজ
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("imagePreview").innerHTML = `<img src="${e.target.result}" width="200">`;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // --- টেক্সট সলভার (Nerdamer + Math.js) ---
+    function preprocess(expr) {
+        // ÷ → /, 2(2+2) → 2*(2+2)
+        let str = expr.replace(/÷/g, '/').replace(/:/g, '/');
+        str = str.replace(/(\d)\(/g, '$1*(').replace(/\)(\d)/g, ')*$1').replace(/\)\(/g, ')*(');
+        str = str.replace(/\^/g, '^'); // nerdamer ^ সমর্থন করে
+        return str;
+    }
+
+    function solveText() {
+        let rawInput = document.getElementById("mathInput").value.trim();
+        let resultDiv = document.getElementById("textResult");
+        if (!rawInput) {
+            resultDiv.innerHTML = '<span class="error">⚠️ দয়া করে একটি সমস্যা লিখুন।</span>';
+            return;
+        }
+        let processed = preprocess(rawInput);
+        let answer = "";
+
+        try {
+            // 1) সমীকরণ কিনা (contains '=')
+            if (rawInput.includes('=')) {
+                // nerdamer solves equations: e.g., "2x+5=13"
+                let sol = nerdamer.solve(processed, 'x');  // চলক x ধরে নিচ্ছি
+                answer = `✅ সমাধান: x = ${sol.toString()}`;
+            }
+            // 2) derivative or diff
+            else if (/derivative|diff|ডেরিভ/i.test(rawInput)) {
+                // extract function: "derivative of x^3" -> "x^3"
+                let match = rawInput.match(/derivative of (.+)/i);
+                let func = match ? match[1] : rawInput.replace(/derivative|diff|ডেরিভ/g, '').trim();
+                let deriv = nerdamer(`diff(${preprocess(func)}, x)`);
+                answer = `📈 ডেরিভেটিভ: ${deriv.toString()}`;
+            }
+            // 3) integrate (নির্দিষ্ট ও অনির্দিষ্ট - basic)
+            else if (/integrate|∫|ইন্টিগ্রাল/i.test(rawInput)) {
+                let match = rawInput.match(/integrate (.+)/i);
+                let func = match ? match[1] : rawInput.replace(/integrate|∫/g, '').trim();
+                let integral = nerdamer(`integrate(${preprocess(func)}, x)`);
+                answer = `∫ অনির্দিষ্ট ইন্টিগ্রাল: ${integral.toString()} + C`;
+            }
+            // 4) factor
+            else if (/factor/i.test(rawInput)) {
+                let match = rawInput.match(/factor (.+)/i);
+                let expr = match ? match[1] : rawInput.replace(/factor/i, '').trim();
+                let factored = nerdamer(`factor(${preprocess(expr)})`);
+                answer = `🔍 উৎপাদক: ${factored.toString()}`;
+            }
+            // 5) সরল পাটিগণিত বা বীজগণিত মূল্যায়ন
+            else {
+                // প্রথমে nerdamer দিয়ে সরলীকরণ করি
+                let simplified = nerdamer(preprocess(rawInput)).toString();
+                // সংখ্যাসূচক মান বের করি (যদি ভেরিয়েবল না থাকে)
+                let numeric = "";
+                try {
+                    let evalMath = math.evaluate(preprocess(rawInput));
+                    numeric = `\n📊 সংখ্যাসূচক মান: ${evalMath}`;
+                } catch(e) { numeric = ""; }
+                answer = `🔢 সরলীকৃত ফলাফল: ${simplified}${numeric}`;
+            }
+            resultDiv.innerHTML = `<strong>✅ ফলাফল:</strong><br>${answer}`;
+        } catch(err) {
+            resultDiv.innerHTML = `<span class="error">❌ সমাধান ব্যর্থ: ${err.message}<br>💡 টিপ: '+' '-' '*' '/' '^' ব্যবহার করুন। সমীকরণের জন্য '2x+5=13' লিখুন।</span>`;
+        }
+    }
+
+    // --- ইমেজ সলভার (Tesseract.js OCR + উপরের লজিক) ---
+    async function solveImage() {
+        const fileInput = document.getElementById('imageInput');
+        const resultDiv = document.getElementById('imageResult');
+        if (!fileInput.files.length) {
+            resultDiv.innerHTML = '<span class="error">⚠️ আগে একটি ছবি নির্বাচন করুন।</span>';
+            return;
+        }
+        const file = fileInput.files[0];
+        resultDiv.innerHTML = '⏳ ছবি থেকে টেক্সট বের করা হচ্ছে (এতে ৫-১০ সেকেন্ড লাগতে পারে)...';
         
-        # 2) ডেরিভেটিভ (derivative, d/dx, ' ইত্যাদি)
-        elif 'derivative' in problem.lower() or "diff" in problem.lower() or "ডেরিভ" in problem:
-            # ফাংশন এবং চলক বের করার চেষ্টা
-            # সহজ পদ্ধতি: ব্যবহারকারী যদি "derivative of x^2" টাইপ করে, তাহলে আমরা extract করি
-            match = re.search(r'derivative of (.+)', problem.lower())
-            if match:
-                func_str = match.group(1)
-            else:
-                func_str = expr_str
-            expr = parse_expr(func_str, transformations=transformations)
-            var = list(expr.free_symbols)[0] if expr.free_symbols else sp.Symbol('x')
-            deriv = sp.diff(expr, var)
-            return f"📈 ডেরিভেটিভ (d/d{var}): {sp.latex(deriv)}"
-        
-        # 3) ইন্টিগ্রাল (integral, ∫)
-        elif 'integral' in problem.lower() or '∫' in problem:
-            # ∫₀¹ x² dx এর মতো পার্স করা জটিল; ব্যবহারকারীকে সঠিক লিখতে বলি বা সরল করুন
-            # সহজ নিয়ম: "integrate x^2 from 0 to 1" অথবা "∫ x^2 dx"
-            if '∫' in problem:
-                # সরলীকৃত: ইউনিকোড ইন্টিগ্রাল চিহ্ন থাকলে স্ট্রিং ক্লিন
-                problem = problem.replace('∫', 'integrate')
-            if 'integrate' in problem.lower():
-                # স্ট্রিং থেকে ফাংশন এবং সীমা বের করার চেষ্টা (খুব জটিল)
-                # সংক্ষেপে: যদি 'from' এবং 'to' থাকে, তাহলে definite integral
-                match = re.search(r'integrate (.+?) (?:from (.+?) to (.+))?', problem.lower())
-                if match:
-                    func_str = match.group(1)
-                    expr = parse_expr(func_str, transformations=transformations)
-                    if match.group(2) and match.group(3):
-                        a = parse_expr(match.group(2))
-                        b = parse_expr(match.group(3))
-                        integ = sp.integrate(expr, (sp.Symbol('x'), a, b))
-                        return f"∫ নির্দিষ্ট ইন্টিগ্রাল: {sp.latex(integ)}"
-                    else:
-                        integ = sp.integrate(expr, sp.Symbol('x'))
-                        return f"∫ অনির্দিষ্ট ইন্টিগ্রাল: {sp.latex(integ)} + C"
-        # 4) সাধারণ এক্সপ্রেশন (সরলীকরণ, মূল্যায়ন)
-        else:
-            expr = parse_expr(expr_str, transformations=transformations)
-            # সংখ্যাসূচক মান বের করার চেষ্টা (যদি সব চলক সংখ্যা হয়)
-            try:
-                numerical = float(sp.N(expr))
-                # যদি পূর্ণসংখ্যা হয়, int দেখান
-                if numerical.is_integer():
-                    numerical = int(numerical)
-                simplified = sp.simplify(expr)
-                return f"🔢 সরলীকৃত ফলাফল: {sp.latex(simplified)}\n\n📊 সংখ্যাসূচক মান: {numerical}"
-            except:
-                simplified = sp.simplify(expr)
-                return f"🔢 সরলীকৃত রাশি: {sp.latex(simplified)}"
-    
-    except sp.SympifyError as e:
-        return f"❌ SymPy পার্সিং ত্রুটি: {str(e)}\n💡 টিপ: '2+2', 'x**2 + 3*x', 'integrate x**2' ইত্যাদি ব্যবহার করুন।"
-    except Exception as e:
-        return f"❌ অজানা ত্রুটি: {str(e)}"
-
-def extract_text_from_image(image_file) -> str:
-    """
-    আপলোড করা ছবি থেকে OCR-এর মাধ্যমে টেক্সট বের করে।
-    """
-    try:
-        img = Image.open(image_file)
-        # ছবির সাইজ বাড়ালে OCR ভালো হয়
-        img = img.resize((img.width*2, img.height*2))
-        text = pytesseract.image_to_string(img, lang='eng+ben')  # ইংরেজি + বাংলা
-        # ম্যাথ এক্সপ্রেশন পরিষ্কার করা
-        text = re.sub(r'[^\w\d\s\+\-\*/\(\)\=\^\^\%\√\[\]\{\}\<\>\.\,\!\?\;\:\|\\]', '', text)
-        return text.strip()
-    except Exception as e:
-        return f"OCR ত্রুটি: {str(e)}"
-
-# ========== UI ডিজাইন ==========
-st.title("🧠 সর্বজনীন গণিত সমাধানকারী")
-st.markdown("টেক্সট টাইপ করে অথবা ছবি আপলোড করে যেকোনো গাণিতিক সমস্যার সমাধান পেতে পারেন।")
-
-# ট্যাব তৈরি: টেক্সট ইনপুট ও ইমেজ ইনপুট
-tab1, tab2 = st.tabs(["✍️ টেক্সট ইনপুট", "🖼️ ইমেজ আপলোড"])
-
-with tab1:
-    st.subheader("ম্যানুয়ালি সমস্যা লিখুন")
-    # প্রি-ডিফাইন্ড উদাহরণ বাটন
-    examples = [
-        "8 ÷ 2(2+2)", "2x + 5 = 13", "∫ x² dx", "derivative of 3x³-2x²+7",
-        "Area of circle radius 7", "x²-9=0", "Pythagorean theorem a=3, b=4",
-        "Factor x²+5x+6", "Solve 2x²+5x-3=0", "∫ sin(x) cos(x) dx",
-        "lim (x→0) sin(x)/x", "Matrix [[1,2],[3,4]] inverse"
-    ]
-    cols = st.columns(3)
-    for i, ex in enumerate(examples):
-        if cols[i%3].button(f"📌 {ex}", key=f"ex_{i}"):
-            st.session_state.text_input = ex
-    # টেক্সট ইনপুট ফিল্ড
-    user_input = st.text_area("আপনার গাণিতিক সমস্যা লিখুন:", value=st.session_state.get("text_input", ""), height=100)
-    if st.button("🔍 সমাধান করুন (টেক্সট)", type="primary"):
-        if user_input:
-            with st.spinner("গণনা চলছে..."):
-                answer = solve_math(user_input)
-            st.success("✅ ফলাফল:")
-            st.latex(answer) if answer.startswith("$") else st.write(answer)
-        else:
-            st.warning("দয়া করে একটি সমস্যা লিখুন।")
-
-with tab2:
-    st.subheader("ছবি আপলোড করুন")
-    uploaded_file = st.file_uploader("গাণিতিক সমস্যার ছবি নির্বাচন করুন (JPG, PNG)", type=["jpg", "jpeg", "png"])
-    if uploaded_file is not None:
-        col1, col2 = st.columns(2)
-        with col1:
-            st.image(uploaded_file, caption="আপলোড করা ছবি", width=250)
-        if st.button("🔍 ছবি থেকে সমাধান করুন", type="primary"):
-            with st.spinner("ছবি থেকে টেক্সট বের করা হচ্ছে..."):
-                extracted_text = extract_text_from_image(uploaded_file)
-            if extracted_text and not extracted_text.startswith("OCR ত্রুটি"):
-                st.info(f"📝 ছবি থেকে প্রাপ্ত টেক্সট: `{extracted_text}`")
-                with st.spinner("গাণিতিক সমাধান চলছে..."):
-                    answer = solve_math(extracted_text)
-                st.success("✅ ফলাফল:")
-                st.write(answer)
-            else:
-                st.error(f"ছবি থেকে টেক্সট বের করতে ব্যর্থ।\n{extracted_text}")
-
-st.markdown("---")
-st.markdown("### 📚 উপলব্ধ গণিতের ধরণসমূহ:")
-st.markdown("""
-- **পাটিগণিত** : `2 + 3 * 4`, `8 ÷ 2(2+2)`
-- **বীজগণিত** : `x^2 - 5x + 6 = 0`, `Factor x^2 + 5x + 6`
-- **ক্যালকুলাস** : `derivative of x^3`, `integral x^2 dx`, `∫₀¹ x² dx` (লিখতে পারেন `integrate x^2 from 0 to 1`)
-- **জ্যামিতি** : `Area of circle radius 7` (SymPy সরাসরি বাক্য বুঝে না, তাই এগুলোর জন্য `π*7**2` লিখুন)
-- **ম্যাট্রিক্স** : `Matrix([[1,2],[3,4]]).inv()`
-- **লিমিট** : `limit(sin(x)/x, x, 0)`
-""")
-st.markdown("> **দ্রষ্টব্য:** 'Area of circle' বা 'Pythagorean theorem' এর মতো প্রাকৃতিক ভাষা পুরোপুরি বোঝে না। দয়া করে সূত্র সরাসরি লিখুন, যেমন `π*7**2` অথবা `sqrt(3**2+4**2)`।")
-
-# API key পরিবর্তনের লিংক (Groq / অন্যান্য মডেল)
-with st.expander("🔑 API Key পরিবর্তন ও অন্যান্য মডেল ব্যবহারের নির্দেশনা"):
-    st.markdown("""
-    **বর্তমান সিস্টেমে কোনো API Key প্রয়োজন নেই** (শুধু SymPy ও Tesseract ব্যবহার করে)।  
-    তবুও আপনি যদি **Groq** অথবা **GPT-4V** এর মতো ভিশন মডেল যুক্ত করতে চান, তাহলে নিচের লিংক থেকে API Key সংগ্রহ করুন এবং কোডে সেই মডেলের ফাংশন যোগ করুন।
-
-    - **Groq (Llama 3.2 Vision)** : [console.groq.com/keys](https://console.groq.com/keys)  
-    - **OpenAI GPT-4V** : [platform.openai.com/api-keys](https://platform.openai.com/api-keys)  
-    - **Google Gemini** : [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)  
-
-    ইমেজ রিকগনিশন উন্নত করতে `transformers` বা `PIL` দিয়ে কাস্টম মডেলও ব্যবহার করতে পারেন। বর্তমান OCR (Tesseract) সাধারণ ছবির জন্য যথেষ্ট।
-    """)
-
-# ফুটার
-st.caption("⚡ SymPy ইঞ্জিনে চালিত | সব ধরনের বীজগণিত, ক্যালকুলাস, সমীকরণ সমাধান করে | ১০০% বাগ-মুক্ত নয়, তবে প্রায় সব ক্ষেত্রেই নির্ভুল")
+        try {
+            const { data: { text } } = await Tesseract.recognize(file, 'eng', {
+                logger: m => console.log(m) // প্রগেস দেখাবে 콘সোলে
+            });
+            const extracted = text.trim();
+            if (!extracted) {
+                resultDiv.innerHTML = '<span class="error">❌ ছবি থেকে কোনো টেক্সট পাওয়া যায়নি। পরিষ্কার ছবি দিন।</span>';
+                return;
+            }
+            resultDiv.innerHTML = `📝 প্রাপ্ত টেক্সট: <code>${extracted}</code><br><br>⏳ গণিত সমাধান চলছে...`;
+            
+            // প্রসেসিং ও সমাধান
+            let processed = preprocess(extracted);
+            let answer = "";
+            try {
+                if (extracted.includes('=')) {
+                    let sol = nerdamer.solve(processed, 'x');
+                    answer = `✅ সমীকরণ সমাধান: x = ${sol.toString()}`;
+                } else if (/derivative|diff/i.test(extracted)) {
+                    let match = extracted.match(/derivative of (.+)/i);
+                    let func = match ? match[1] : extracted.replace(/derivative|diff/g, '').trim();
+                    let deriv = nerdamer(`diff(${preprocess(func)}, x)`);
+                    answer = `📈 ডেরিভেটিভ: ${deriv.toString()}`;
+                } else {
+                    let simplified = nerdamer(processed).toString();
+                    let numeric = "";
+                    try {
+                        numeric = `\n📊 সংখ্যাসূচক মান: ${math.evaluate(processed)}`;
+                    } catch(e) {}
+                    answer = `🔢 ফলাফল: ${simplified}${numeric}`;
+                }
+                resultDiv.innerHTML = `<strong>✅ ছবির ভিত্তিতে সমাধান:</strong><br>${answer}`;
+            } catch(err) {
+                resultDiv.innerHTML = `<span class="error">❌ গাণিতিক সমাধান ব্যর্থ: ${err.message}</span>`;
+            }
+        } catch(err) {
+            resultDiv.innerHTML = `<span class="error">❌ OCR ত্রুটি: ${err.message}</span>`;
+        }
+    }
+</script>
+</body>
+</html>
