@@ -2,284 +2,289 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>MathSnap — Free Photo Math Solver (Groq AI)</title>
-  <meta name="description" content="Solve any math problem instantly for free. Upload photo or type — step-by-step solutions. Powered by Groq (100% free).">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://johircu2-bit.github.io/mathsnap">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathSnap — Free Photo Math Solver (Groq)</title>
+  <meta name="description" content="Solve math with photo or text — step-by-step, 100% free. Powered by Groq Llama 3.">
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#0a0a0f; --surface:#13131a; --surface2:#1c1c26;
-      --border:#2a2a3a; --accent:#7c6af7; --accent2:#a78bfa;
-      --gold:#f0c040; --text:#f0eeff; --muted:#8b87aa;
-      --green:#4ade80; --red:#f87171; --orange:#fb923c;
-    }
-    body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;min-height:100vh}
-    .noise{position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");z-index:0}
-    .glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,106,247,0.12) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:0}
-    header{position:relative;z-index:10;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-    .logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text);display:flex;align-items:center;gap:8px;text-decoration:none}
-    .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
-    .header-right{display:flex;align-items:center;gap:10px}
-    .api-status{font-size:11px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;border:1px solid}
-    .api-status.ok{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--green)}
-    .api-status.missing{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:var(--orange)}
-    .free-badge{font-size:11px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace}
-    main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .api-setup{background:var(--surface);border:1.5px solid rgba(74,222,128,.3);border-radius:20px;padding:1.5rem;margin-bottom:2rem}
-    .api-setup.has-key{border-color:rgba(74,222,128,.2)}
-    .api-setup-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .api-setup-header h2{font-size:1rem;font-weight:500;color:var(--green)}
-    .api-setup p{font-size:.875rem;color:var(--muted);line-height:1.7;margin-bottom:12px}
-    .api-setup a{color:var(--accent2);text-decoration:none}
-    .steps-mini{background:var(--surface2);border-radius:10px;padding:.75rem 1rem;margin-bottom:12px;font-size:.82rem;color:var(--muted);line-height:2}
-    .steps-mini b{color:var(--text)}
-    .api-input-row{display:flex;gap:8px;flex-wrap:wrap}
-    .api-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.6rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.85rem;outline:none}
-    .api-input:focus{border-color:var(--accent)}
-    .api-input.saved{border-color:var(--green)}
-    .btn{padding:.65rem 1.4rem;border-radius:10px;font-size:.9rem;font-weight:500;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px}
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-primary:hover{background:#6a58e0}
-    .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
-    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-    .btn-sm{padding:.45rem 1rem;font-size:.82rem}
-    .hero{text-align:center;margin-bottom:2.5rem}
-    .hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;margin-bottom:1rem}
-    .hero h1 em{font-style:italic;color:var(--accent2)}
-    .hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto}
-    .upload-zone{background:var(--surface);border:1.5px dashed var(--border);border-radius:20px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s}
-    .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(124,106,247,0.05)}
-    #fileInput{position:absolute;width:1px;height:1px;opacity:0}
-    .upload-icon{width:56px;height:56px;background:rgba(124,106,247,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px}
-    .formats{display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap}
-    .fmt-tag{font-size:11px;font-family:'DM Mono',monospace;background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:6px}
-    .preview-area{margin-top:1.5rem;display:none}
-    .preview-img{width:100%;max-height:320px;object-fit:contain;border-radius:12px;border:1px solid var(--border)}
-    .action-row{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}
-    .or-divider{text-align:center;color:var(--muted);margin:1.5rem 0;display:flex;align-items:center;gap:12px}
-    .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-    .text-input-area{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1rem 1.2rem}
-    textarea{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.95rem;resize:vertical;min-height:80px}
-    .solving{display:none;text-align:center;padding:2.5rem;background:var(--surface);border-radius:20px;margin-top:1.5rem}
-    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .result-card{display:none;margin-top:1.5rem;background:var(--surface);border-radius:20px;overflow:hidden}
-    .result-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-    .status-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
-    .result-body{padding:1.5rem}
-    .answer-box{background:rgba(240,192,64,.07);border:1px solid rgba(240,192,64,.2);border-radius:12px;padding:1rem;margin-bottom:1.4rem}
-    .answer-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--gold);text-transform:uppercase}
-    .answer-value{font-size:1.4rem;font-weight:600;color:var(--gold);font-family:'DM Mono',monospace;word-break:break-word}
-    .step{display:flex;gap:12px;margin-bottom:14px}
-    .step-num{width:26px;height:26px;border-radius:8px;background:rgba(124,106,247,.15);color:var(--accent2);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
-    .step-text{font-size:.9rem;line-height:1.7}
-    .step-text code{font-family:'DM Mono',monospace;background:var(--surface2);padding:1px 6px;border-radius:4px;color:var(--gold)}
-    .explanation{background:var(--surface2);border-radius:12px;padding:1rem;margin-top:1rem;font-size:.88rem;color:var(--muted)}
-    .examples{margin-top:3rem}
-    .examples h2{font-size:.8rem;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase}
-    .example-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
-    .chip{background:var(--surface);border:1px solid var(--border);padding:.45rem .9rem;border-radius:10px;font-size:.82rem;cursor:pointer}
-    .chip:hover{border-color:var(--accent);color:var(--accent)}
-    .error-box{display:none;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:1rem;margin-top:1rem;color:var(--red)}
-    footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
-    @media(max-width:600px){header{padding:1rem} .btn{width:100%;justify-content:center}}
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c26;--border:#2a2a3a;--accent:#7c6af7;--accent2:#a78bfa;--gold:#f0c040;--text:#f0eeff;--muted:#8b87aa;--green:#4ade80;--red:#f87171}
+    body{background:var(--bg);color:var(--text);font-family:system-ui, 'Outfit', sans-serif}
+    .container{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+    .api-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.5rem;margin-bottom:2rem}
+    input,textarea{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:0.75rem;color:white;width:100%;font-family:monospace}
+    button{background:var(--accent);border:none;border-radius:12px;padding:0.6rem 1.2rem;color:white;cursor:pointer;font-weight:bold}
+    .upload-zone{background:var(--surface);border:2px dashed var(--border);border-radius:20px;padding:2rem;text-align:center;cursor:pointer}
+    .result-card{background:var(--surface);border-radius:20px;margin-top:1.5rem;display:none}
+    .answer{background:rgba(240,192,64,0.1);padding:1rem;border-radius:12px;margin:1rem 0}
+    .step{display:flex;gap:10px;margin-bottom:12px}
+    .chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:0.3rem 0.8rem;font-size:0.8rem;cursor:pointer}
+    .error{color:var(--red);background:#ff000011;padding:1rem;border-radius:12px;display:none}
+    footer{text-align:center;padding:2rem;color:var(--muted);font-size:0.8rem}
   </style>
 </head>
 <body>
-<div class="noise"></div><div class="glow"></div>
-<header>
-  <a href="/" class="logo"><div class="logo-icon">∑</div>MathSnap</a>
-  <div class="header-right"><span class="api-status missing" id="apiStatusBadge">⚡ Setup needed</span><span class="free-badge">100% Free</span></div>
-</header>
-<main>
-  <div class="hero"><h1>Solve any math problem<br><em>instantly</em> — free</h1><p>Upload a photo or type your problem. Step-by-step solutions.</p></div>
+<div class="container">
+  <h1 style="font-size:2rem">📸 MathSnap <span style="color:var(--accent2)">— Free Solver</span></h1>
+  <p>Upload photo or type any math problem → step-by-step solution</p>
 
-  <div class="api-setup" id="apiSetup">
-    <div class="api-setup-header"><span style="font-size:20px">🚀</span><h2>Free API Key (Groq) — 2 min setup</h2></div>
-    <div class="steps-mini">
-      <b>Step 1:</b> Go to <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> (Login with Google/GitHub)<br>
-      <b>Step 2:</b> Click <b>"Create API Key"</b> → Name it <code>mathsnap</code> → Expiration: <b>No expiration</b><br>
-      <b>Step 3:</b> Copy the key (starts with <code>gsk_</code>) → Paste below → Save<br>
-      💡 <b>100% free, no credit card, CORS enabled</b>
+  <!-- API Key Setup -->
+  <div class="api-card" id="apiSetup">
+    <h3>🚀 Free API Key (Groq)</h3>
+    <p>1. Go to <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> (Login with Google/GitHub)<br>
+    2. Click <strong>Create API Key</strong> → Name: <code>mathsnap</code> → Expiration: <strong>No expiration</strong><br>
+    3. Copy key (starts with <code>gsk_</code>) → Paste below → Save</p>
+    <input type="password" id="apiKeyInput" placeholder="gsk_...">
+    <div style="margin-top:10px">
+      <button id="saveKeyBtn">Save Key</button>
+      <button id="clearKeyBtn" style="background:#333">Clear</button>
     </div>
-    <div class="api-input-row">
-      <input type="password" class="api-input" id="apiKeyInput" placeholder="gsk_...">
-      <button class="btn btn-primary btn-sm" id="saveKeyBtn">Save Key</button>
-      <button class="btn btn-ghost btn-sm" id="clearKeyBtn" style="display:none">Clear</button>
-    </div>
-    <div id="keyFeedback" style="font-size:.8rem;margin-top:8px"></div>
+    <div id="keyStatus" style="margin-top:8px;font-size:0.8rem"></div>
   </div>
 
-  <input type="file" accept="image/jpeg,image/png,image/webp" id="fileInput">
-  <div class="upload-zone" id="dropzone" tabindex="0">
-    <div class="upload-icon">📸</div>
-    <h3>Drop your math problem here</h3>
-    <p>Drag & drop or <strong style="color:var(--accent2)">click to browse</strong></p>
-    <div class="formats"><span class="fmt-tag">JPG</span><span class="fmt-tag">PNG</span><span class="fmt-tag">WEBP</span></div>
+  <!-- Image Upload -->
+  <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" style="display:none">
+  <div class="upload-zone" id="dropzone">
+    <div>📷 Click or drag & drop math problem image</div>
+    <div style="font-size:0.7rem;margin-top:8px">JPG, PNG, WEBP (Max 5MB)</div>
   </div>
-  <div class="preview-area" id="previewArea">
-    <img class="preview-img" id="previewImg" alt="Preview">
-    <div class="file-info" id="fileInfo"></div>
-    <div class="action-row"><button class="btn btn-primary" id="solveBtn">✦ Solve this problem</button><button class="btn btn-ghost" id="clearBtn">✕ Clear</button></div>
+  <div id="previewArea" style="margin-top:1rem;display:none">
+    <img id="previewImg" style="max-width:100%;max-height:200px;border-radius:12px">
+    <button id="solveImageBtn" style="margin-top:10px">✦ Solve this image</button>
+    <button id="clearImageBtn" style="background:#333">Clear</button>
   </div>
-  <div class="or-divider">or type your problem</div>
-  <div class="text-input-area">
-    <label for="textInput">type or paste your math problem</label>
-    <textarea id="textInput" placeholder="e.g. Solve for x: 3x² + 5x - 2 = 0 | ∫ sin(x) dx | Area of circle radius 7" maxlength="2000"></textarea>
-    <div class="action-row" style="margin-top:.75rem"><button class="btn btn-primary" id="solveTextBtn">✦ Solve</button></div>
+
+  <div style="text-align:center;margin:1rem 0">——— or type ———</div>
+
+  <textarea id="textProblem" rows="3" placeholder="e.g. Solve: 2x + 5 = 13  |  ∫ x² dx  |  derivative of 3x³"></textarea>
+  <button id="solveTextBtn" style="margin-top:10px">✦ Solve text</button>
+
+  <div class="error" id="errorBox"></div>
+  <div id="loading" style="display:none;text-align:center;margin:1rem">⏳ Solving...</div>
+  <div class="result-card" id="resultCard">
+    <div style="padding:1rem;border-bottom:1px solid var(--border)"><strong>✅ Solution</strong></div>
+    <div id="resultContent" style="padding:1rem"></div>
   </div>
-  <div class="error-box" id="errorBox"></div>
-  <div class="solving" id="solvingBox"><div class="spinner"></div><p>Solving your problem...</p></div>
-  <div class="result-card" id="resultCard"><div class="result-header"><div class="status-dot"></div><h3>Solution</h3></div><div class="result-body" id="resultBody"></div></div>
-  <section class="examples"><h2>// try an example</h2><div class="example-chips" id="exampleChips"></div></section>
-</main>
-<footer><p>MathSnap — Free AI math solver powered by Groq (Llama 3) · 100% free · No login required</p></footer>
+
+  <h3 style="margin-top:2rem">📌 Try examples</h3>
+  <div id="exampleList" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:0.5rem"></div>
+</div>
+<footer>Powered by Groq Llama 3 (vision + text) • 100% free • No credit card</footer>
 
 <script>
-(function(){
-  const STORAGE_KEY = 'mathsnap_groq_key';
-  let apiKey = '';
-  let imgB64 = null, imgMime = null, isSolving = false;
-  const MAX_MB = 8;
+// --- CONFIG ---
+const STORAGE_KEY = 'mathsnap_groq_key';
+let apiKey = '';
+let currentImageBase64 = null;
+let currentImageMime = null;
 
-  // DOM elements
-  const apiInput = document.getElementById('apiKeyInput');
-  const saveKeyBtn = document.getElementById('saveKeyBtn');
-  const clearKeyBtn = document.getElementById('clearKeyBtn');
-  const keyFeedback = document.getElementById('keyFeedback');
-  const apiStatusBadge = document.getElementById('apiStatusBadge');
-  const apiSetupDiv = document.getElementById('apiSetup');
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('fileInput');
-  const previewArea = document.getElementById('previewArea');
-  const previewImg = document.getElementById('previewImg');
-  const fileInfo = document.getElementById('fileInfo');
-  const solveBtn = document.getElementById('solveBtn');
-  const clearPreviewBtn = document.getElementById('clearBtn');
-  const textInput = document.getElementById('textInput');
-  const solveTextBtn = document.getElementById('solveTextBtn');
-  const solvingBox = document.getElementById('solvingBox');
-  const resultCard = document.getElementById('resultCard');
-  const resultBody = document.getElementById('resultBody');
-  const errorBox = document.getElementById('errorBox');
+// Models: text + vision (working as of June 2026)
+const TEXT_MODEL = 'llama-3.3-70b-versatile';      // fast, good math
+const VISION_MODEL = 'llama-3.2-11b-vision-preview'; // still supported
 
-  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function safeRich(s) { return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>'); }
+// DOM elements
+const apiInput = document.getElementById('apiKeyInput');
+const saveBtn = document.getElementById('saveKeyBtn');
+const clearKeyBtn = document.getElementById('clearKeyBtn');
+const keyStatusDiv = document.getElementById('keyStatus');
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const previewArea = document.getElementById('previewArea');
+const previewImg = document.getElementById('previewImg');
+const solveImageBtn = document.getElementById('solveImageBtn');
+const clearImageBtn = document.getElementById('clearImageBtn');
+const textProblem = document.getElementById('textProblem');
+const solveTextBtn = document.getElementById('solveTextBtn');
+const errorBox = document.getElementById('errorBox');
+const loadingDiv = document.getElementById('loading');
+const resultCard = document.getElementById('resultCard');
+const resultContent = document.getElementById('resultContent');
 
-  function updateKeyUI(saved) {
-    if(saved && apiKey) {
-      apiInput.value = '••••••••••••••••••••••';
-      apiInput.readOnly = true;
-      apiInput.classList.add('saved');
-      clearKeyBtn.style.display = 'inline-flex';
-      keyFeedback.innerHTML = '<span style="color:var(--green)">✓ API key saved — Ready!</span>';
-      apiStatusBadge.textContent = '✓ Ready';
-      apiStatusBadge.className = 'api-status ok';
-      apiSetupDiv.classList.add('has-key');
-    } else {
-      apiInput.value = '';
-      apiInput.readOnly = false;
-      apiInput.classList.remove('saved');
-      clearKeyBtn.style.display = 'none';
-      keyFeedback.innerHTML = '';
-      apiStatusBadge.textContent = '⚡ Setup needed';
-      apiStatusBadge.className = 'api-status missing';
-      apiSetupDiv.classList.remove('has-key');
+// Helper: escape
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function formatRich(s) { return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>'); }
+
+// API Key management
+function updateKeyUI() {
+  if (apiKey && apiKey.startsWith('gsk_')) {
+    apiInput.value = '••••••••••••••••';
+    apiInput.disabled = true;
+    clearKeyBtn.style.display = 'inline-block';
+    keyStatusDiv.innerHTML = '<span style="color:var(--green)">✅ Key saved. Ready to solve!</span>';
+  } else {
+    apiInput.value = '';
+    apiInput.disabled = false;
+    clearKeyBtn.style.display = 'none';
+    keyStatusDiv.innerHTML = '';
+  }
+}
+function loadKey() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && saved.startsWith('gsk_')) { apiKey = saved; updateKeyUI(); }
+    else { apiKey = ''; updateKeyUI(); }
+  } catch(e) { apiKey = ''; updateKeyUI(); }
+}
+function saveApiKey() {
+  let val = apiInput.value.trim();
+  if (apiInput.disabled) { keyStatusDiv.innerHTML = '<span style="color:var(--orange)">Already saved. Clear to change.</span>'; return; }
+  if (!val) { keyStatusDiv.innerHTML = '<span style="color:var(--red)">Please paste your Groq API key</span>'; return; }
+  if (!val.startsWith('gsk_')) { keyStatusDiv.innerHTML = '<span style="color:var(--orange)">⚠️ Key must start with gsk_</span>'; return; }
+  try { localStorage.setItem(STORAGE_KEY, val); } catch(e) {}
+  apiKey = val;
+  updateKeyUI();
+}
+function clearApiKey() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+  apiKey = '';
+  updateKeyUI();
+  apiInput.focus();
+}
+function checkKey() {
+  if (!apiKey) { errorBox.style.display = 'block'; errorBox.innerText = '❌ Please set your Groq API key first (see box above).'; setTimeout(()=>errorBox.style.display='none',4000); return false; }
+  return true;
+}
+
+// Image handling
+function handleImage(file) {
+  if (!file.type.startsWith('image/')) { alert('Only images'); return; }
+  if (file.size > 5*1024*1024) { alert('Max 5MB'); return; }
+  currentImageMime = file.type;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentImageBase64 = e.target.result.split(',')[1];
+    previewImg.src = e.target.result;
+    previewArea.style.display = 'block';
+    errorBox.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+function clearImage() {
+  currentImageBase64 = null;
+  previewArea.style.display = 'none';
+  previewImg.src = '';
+}
+
+// Groq API call (supports both text and vision)
+async function callGroq(prompt, imageBase64 = null, isVision = false) {
+  const model = isVision ? VISION_MODEL : TEXT_MODEL;
+  const messages = [];
+  if (imageBase64 && isVision) {
+    messages.push({
+      role: "user",
+      content: [
+        { type: "text", text: prompt },
+        { type: "image_url", image_url: { url: `data:${currentImageMime};base64,${imageBase64}` } }
+      ]
+    });
+  } else {
+    messages.push({ role: "user", content: prompt });
+  }
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model, messages, temperature: 0.1, max_tokens: 1500 })
+  });
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(errText);
+  }
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+// Prompt for math solving (JSON output)
+function buildMathPrompt(question) {
+  return `You are a math solver. Solve this problem: ${question}. Return ONLY valid JSON with no extra text. Format: {"answer": "final answer", "steps": [{"num": 1, "text": "step description with **bold** and \`code\` for expressions"}], "explanation": "brief method", "error": null}. If cannot solve, set "error" to reason.`;
+}
+
+async function solveMath(question, imageBase64 = null) {
+  const isVision = (imageBase64 !== null);
+  const prompt = buildMathPrompt(question);
+  const raw = await callGroq(prompt, imageBase64, isVision);
+  // Extract JSON
+  let jsonStr = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+  try {
+    return JSON.parse(jsonStr);
+  } catch(e) {
+    // fallback: try to find first { ... }
+    const match = jsonStr.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    throw new Error('Invalid JSON response');
+  }
+}
+
+// UI: show result
+function displayResult(data) {
+  resultCard.style.display = 'block';
+  if (data.error) {
+    resultContent.innerHTML = `<div style="color:var(--red)">❌ ${esc(data.error)}</div>`;
+    return;
+  }
+  let stepsHtml = '';
+  if (data.steps && Array.isArray(data.steps)) {
+    stepsHtml = '<div style="margin-top:1rem"><strong>📝 Step-by-step:</strong></div>';
+    for (let s of data.steps) {
+      stepsHtml += `<div class="step"><span style="background:var(--accent);border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:12px">${s.num||'•'}</span><div>${formatRich(s.text)}</div></div>`;
     }
   }
+  resultContent.innerHTML = `
+    <div class="answer"><strong>🎯 Final answer:</strong><br><span style="font-size:1.4rem;color:var(--gold)">${esc(data.answer)}</span></div>
+    ${stepsHtml}
+    ${data.explanation ? `<div style="margin-top:1rem;background:var(--surface2);padding:0.8rem;border-radius:12px"><strong>💡 Method:</strong> ${esc(data.explanation)}</div>` : ''}
+    <button id="copyResultBtn" style="margin-top:1rem;background:#333">📋 Copy solution</button>
+  `;
+  const copyBtn = document.getElementById('copyResultBtn');
+  if (copyBtn) copyBtn.onclick = () => {
+    const text = resultContent.innerText.replace('Copy solution','').trim();
+    navigator.clipboard.writeText(text);
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => copyBtn.textContent = 'Copy solution', 1500);
+  };
+}
 
-  function loadKey() {
-    try { const stored = localStorage.getItem(STORAGE_KEY); if(stored && stored.startsWith('gsk_')) { apiKey = stored; updateKeyUI(true); } else { apiKey = ''; updateKeyUI(false); } } catch(e) { updateKeyUI(false); }
+async function handleSolve(question, imageBase64 = null) {
+  if (!checkKey()) return;
+  if (!question || question.trim() === '') { errorBox.innerText = 'Please enter a math problem'; errorBox.style.display='block'; setTimeout(()=>errorBox.style.display='none',3000); return; }
+  errorBox.style.display = 'none';
+  loadingDiv.style.display = 'block';
+  resultCard.style.display = 'none';
+  try {
+    const result = await solveMath(question, imageBase64);
+    displayResult(result);
+  } catch (err) {
+    let msg = err.message;
+    if (msg.includes('model') && msg.includes('decommissioned')) msg = 'Model updated automatically. Please retry.';
+    errorBox.innerText = '⚠️ ' + msg;
+    errorBox.style.display = 'block';
+  } finally {
+    loadingDiv.style.display = 'none';
   }
-  function saveKey() {
-    let raw = apiInput.value.trim();
-    if(apiInput.readOnly) { keyFeedback.innerHTML = '<span style="color:var(--orange)">Key already saved. Press Clear to change.</span>'; return; }
-    if(!raw) { keyFeedback.innerHTML = '<span style="color:var(--red)">Please paste your Groq API key</span>'; return; }
-    if(!raw.startsWith('gsk_')) { keyFeedback.innerHTML = '<span style="color:var(--orange)">⚠ Groq keys start with "gsk_" — double-check</span>'; }
-    try { localStorage.setItem(STORAGE_KEY, raw); } catch(e) {}
-    apiKey = raw;
-    updateKeyUI(true);
-  }
-  function clearKey() { try { localStorage.removeItem(STORAGE_KEY); } catch(e) {} apiKey = ''; updateKeyUI(false); apiInput.focus(); }
+}
 
-  function showError(msg) { isSolving = false; solvingBox.style.display = 'none'; errorBox.style.display = 'block'; errorBox.textContent = '⚠ ' + msg; solveBtn.disabled = false; solveTextBtn.disabled = false; }
-  function showSolving() { isSolving = true; solvingBox.style.display = 'block'; resultCard.style.display = 'none'; errorBox.style.display = 'none'; solveBtn.disabled = true; solveTextBtn.disabled = true; solvingBox.scrollIntoView({behavior:'smooth'}); }
-  function doneSolving() { isSolving = false; solveBtn.disabled = false; solveTextBtn.disabled = false; }
-  function hideResult() { solvingBox.style.display = 'none'; resultCard.style.display = 'none'; }
+// Event binding
+saveBtn.onclick = saveApiKey;
+clearKeyBtn.onclick = clearApiKey;
+dropzone.onclick = () => fileInput.click();
+fileInput.onchange = (e) => { if (e.target.files[0]) handleImage(e.target.files[0]); };
+dropzone.ondragover = (e) => e.preventDefault();
+dropzone.ondrop = (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if(f) handleImage(f); };
+solveImageBtn.onclick = () => { if (currentImageBase64) handleSolve('Solve the math problem in this image', currentImageBase64); else alert('No image'); };
+clearImageBtn.onclick = clearImage;
+solveTextBtn.onclick = () => handleSolve(textProblem.value, null);
 
-  function checkKey() { if(!apiKey) { showError('Please set your Groq API key above.'); document.getElementById('apiSetup').scrollIntoView({behavior:'smooth'}); return false; } return true; }
+// Example chips
+const examples = ["2x + 5 = 13", "∫ x² dx", "Derivative of 3x³ - 2x²", "Area of circle radius 7", "x² - 9 = 0", "Pythagorean theorem: a=3, b=4", "Factor x²+5x+6"];
+const exampleDiv = document.getElementById('exampleList');
+examples.forEach(ex => {
+  const btn = document.createElement('button');
+  btn.className = 'chip';
+  btn.innerText = ex;
+  btn.onclick = () => { textProblem.value = ex; handleSolve(ex); };
+  exampleDiv.appendChild(btn);
+});
 
-  function loadImage(file) {
-    if(!file.type.startsWith('image/')) { showError('Only images allowed.'); return; }
-    if(file.size > MAX_MB*1024*1024) { showError(`Max ${MAX_MB}MB`); return; }
-    imgMime = file.type;
-    const reader = new FileReader();
-    reader.onload = ev => { imgB64 = ev.target.result.split(',')[1]; previewImg.src = ev.target.result; fileInfo.textContent = `${file.name} • ${(file.size/1024/1024).toFixed(2)} MB`; previewArea.style.display = 'block'; hideResult(); errorBox.style.display = 'none'; };
-    reader.onerror = () => showError('Could not read image.');
-    reader.readAsDataURL(file);
-  }
-  function clearImage() { imgB64 = null; imgMime = null; previewArea.style.display = 'none'; previewImg.src = ''; hideResult(); errorBox.style.display = 'none'; }
-
-  async function callGroq(prompt, imageBase64 = null) {
-    const messages = [{ role: "user", content: imageBase64 ? [
-      { type: "text", text: prompt },
-      { type: "image_url", image_url: { url: `data:${imgMime||'image/jpeg'};base64,${imageBase64}` } }
-    ] : prompt }];
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "llama-3.2-90b-vision-preview", messages, temperature: 0.1, max_tokens: 1500 })
-    });
-    if(!response.ok) { const err = await response.text(); throw new Error(err.substring(0,200)); }
-    const data = await response.json();
-    return data.choices[0].message.content;
-  }
-
-  function buildPrompt(userQuery) { return `Solve this math problem: ${userQuery}. Respond ONLY with valid JSON: {"problem":"restate","answer":"final answer","steps":[{"num":1,"text":"step with backticks for expressions like \`3x+2\`, **bold** for results"}],"explanation":"method note","error":null}. If unsolvable set "error". Plain text only.`; }
-
-  async function solveWithAI(prompt, image=null) {
-    const raw = await callGroq(prompt, image);
-    const clean = raw.replace(/^```json\s*/i,'').replace(/```$/,'').trim();
-    try { return JSON.parse(clean); } catch(e) { return null; }
-  }
-
-  async function solveImage() { if(!imgB64) { showError('Upload an image first.'); return; } if(!checkKey()) return; showSolving(); try { const result = await solveWithAI(buildPrompt('Read and solve the math problem in the image.'), imgB64); renderResult(result); } catch(e) { showError('API error: '+e.message); } finally { doneSolving(); } }
-  async function solveText(q) { if(!q.trim()) { showError('Type a math problem.'); return; } if(!checkKey()) return; showSolving(); try { const result = await solveWithAI(buildPrompt(q), null); renderResult(result); } catch(e) { showError('API error: '+e.message); } finally { doneSolving(); } }
-
-  function renderResult(parsed) {
-    solvingBox.style.display = 'none';
-    resultCard.style.display = 'block';
-    if(!parsed || parsed.error) { resultBody.innerHTML = `<div class="explanation" style="color:var(--red)"><strong>Error:</strong> ${esc(parsed?.error || 'Could not parse solution')}</div>`; return; }
-    let stepsHtml = '';
-    if(Array.isArray(parsed.steps)) stepsHtml = '<p class="steps-label">step-by-step solution</p>' + parsed.steps.map(s => `<div class="step"><div class="step-num">${s.num||'?'}</div><div class="step-text">${safeRich(s.text||'')}</div></div>`).join('');
-    resultBody.innerHTML = `<div class="answer-box"><div class="answer-label">final answer</div><div class="answer-value">${esc(parsed.answer||'—')}</div></div>${stepsHtml}${parsed.explanation?`<div class="explanation"><strong>Method:</strong> ${esc(parsed.explanation)}</div>`:''}<button class="btn btn-ghost" style="margin-top:1rem" id="copyBtn">Copy solution</button>`;
-    const copyBtn = document.getElementById('copyBtn'); if(copyBtn) copyBtn.onclick = () => { navigator.clipboard.writeText(resultBody.innerText.replace('Copy solution','').trim()).then(() => copyBtn.textContent='Copied!', setTimeout(()=>copyBtn.textContent='Copy solution',2000)); };
-    resultCard.scrollIntoView({behavior:'smooth'});
-  }
-
-  // Example chips
-  const examples = ["2x + 5 = 13", "∫ x² dx", "sin²(x)+cos²(x)", "Derivative of 3x³−2x²+7", "Area of circle radius 7", "x²−9=0", "Pythagorean theorem a=3,b=4", "Factor x²+5x+6"];
-  const chipsDiv = document.getElementById('exampleChips');
-  examples.forEach(ex => { const btn = document.createElement('button'); btn.className = 'chip'; btn.textContent = ex; btn.onclick = () => { textInput.value = ex; solveText(ex); }; chipsDiv.appendChild(btn); });
-
-  // Event listeners
-  saveKeyBtn.addEventListener('click', saveKey);
-  clearKeyBtn.addEventListener('click', clearKey);
-  apiInput.addEventListener('keydown', e => { if(e.key === 'Enter') saveKey(); });
-  dropzone.addEventListener('click', () => fileInput.click());
-  fileInput.addEventListener('change', e => { if(e.target.files[0]) loadImage(e.target.files[0]); fileInput.value = ''; });
-  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
-  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
-  dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag'); const f = e.dataTransfer.files[0]; if(f && f.type.startsWith('image/')) loadImage(f); else showError('Drop an image.'); });
-  clearPreviewBtn.addEventListener('click', clearImage);
-  solveBtn.addEventListener('click', () => { if(imgB64) solveImage(); else showError('No image selected.'); });
-  solveTextBtn.addEventListener('click', () => solveText(textInput.value));
-  textInput.addEventListener('keydown', e => { if((e.ctrlKey||e.metaKey) && e.key === 'Enter') solveText(textInput.value); });
-
-  loadKey();
-})();
+// Initial load
+loadKey();
 </script>
 </body>
 </html>
