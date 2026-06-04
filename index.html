@@ -8,20 +8,20 @@
 <meta property="og:title" content="MathSnap — Free Photo Math Solver">
 <meta property="og:description" content="Take a photo of any math problem and get instant step-by-step solutions. 100% free, no login required.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://yourdomain.com">
-<meta property="og:image" content="https://yourdomain.com/og-image.png">
+<meta property="og:url" content="https://johircu2-bit.github.io/mathsnap">
+<meta property="og:image" content="https://johircu2-bit.github.io/mathsnap/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MathSnap — Free Photo Math Solver">
 <meta name="twitter:description" content="Solve any math problem from a photo. Free, instant, step-by-step.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://yourdomain.com">
+<link rel="canonical" href="https://johircu2-bit.github.io/mathsnap">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "MathSnap",
   "description": "Free photo math solver with step-by-step solutions",
-  "url": "https://yourdomain.com",
+  "url": "https://johircu2-bit.github.io/mathsnap",
   "applicationCategory": "EducationApplication",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "featureList": ["Photo math solving", "Step-by-step solutions", "Algebra", "Calculus", "Geometry"]
@@ -29,75 +29,74 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap&font-display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0a0a0f;
-  --surface:#13131a;
-  --surface2:#1c1c26;
-  --border:#2a2a3a;
-  --accent:#7c6af7;
-  --accent2:#a78bfa;
-  --gold:#f0c040;
-  --text:#f0eeff;
-  --muted:#8b87aa;
-  --green:#4ade80;
-  --red:#f87171;
+  --bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c26;
+  --border:#2a2a3a;--accent:#7c6af7;--accent2:#a78bfa;
+  --gold:#f0c040;--text:#f0eeff;--muted:#8b87aa;
+  --green:#4ade80;--red:#f87171;--orange:#fb923c;
 }
 body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
 .noise{position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");z-index:0}
 .glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,106,247,0.12) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:0}
 
-/* ── HEADER ── */
 header{position:relative;z-index:10;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
 .logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text);display:flex;align-items:center;gap:8px;text-decoration:none}
 .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.header-right{display:flex;align-items:center;gap:10px}
 .badge{font-size:11px;background:rgba(124,106,247,0.15);border:1px solid rgba(124,106,247,0.3);color:var(--accent2);padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace}
+.api-status{font-size:11px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;border:1px solid}
+.api-status.ok{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--green)}
+.api-status.missing{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:var(--orange)}
 
-/* ── LAYOUT ── */
-main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:3rem 1.5rem 4rem}
+main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
 
-/* ── HERO ── */
-.hero{text-align:center;margin-bottom:3rem}
+/* API KEY SETUP BOX */
+.api-setup{background:var(--surface);border:1.5px solid rgba(251,146,60,.4);border-radius:20px;padding:1.5rem;margin-bottom:2rem}
+.api-setup-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.api-setup-header h2{font-size:1rem;font-weight:500;color:var(--orange)}
+.api-setup p{font-size:.875rem;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.api-setup a{color:var(--accent2);text-decoration:none}
+.api-setup a:hover{text-decoration:underline}
+.api-input-row{display:flex;gap:8px}
+.api-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.6rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.85rem;outline:none;transition:border-color .2s}
+.api-input:focus{border-color:var(--accent)}
+.api-input::placeholder{color:rgba(139,135,170,.4)}
+.api-input.saved{border-color:var(--green)}
+
+.hero{text-align:center;margin-bottom:2.5rem}
 .hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.15;margin-bottom:1rem}
 .hero h1 em{font-style:italic;color:var(--accent2)}
 .hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
 
-/* ── UPLOAD ZONE ── */
 .upload-zone{background:var(--surface);border:1.5px dashed var(--border);border-radius:20px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden}
 .upload-zone:hover,.upload-zone.drag,.upload-zone:focus-within{border-color:var(--accent);background:rgba(124,106,247,0.05)}
-/* hidden real input — clickable area is the whole zone via label */
 #fileInput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-.upload-label{display:block;cursor:pointer;outline:none}
-.upload-label:focus-visible .upload-zone{outline:2px solid var(--accent);outline-offset:2px}
-.upload-icon{width:56px;height:56px;background:rgba(124,106,247,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px;pointer-events:none}
-.upload-zone h3{font-size:1.05rem;font-weight:500;margin-bottom:6px;pointer-events:none}
-.upload-zone p{font-size:.875rem;color:var(--muted);pointer-events:none}
-.formats{display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap;pointer-events:none}
+.upload-icon{width:56px;height:56px;background:rgba(124,106,247,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px}
+.upload-zone h3{font-size:1.05rem;font-weight:500;margin-bottom:6px}
+.upload-zone p{font-size:.875rem;color:var(--muted)}
+.formats{display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap}
 .fmt-tag{font-size:11px;font-family:'DM Mono',monospace;background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:6px;color:var(--muted)}
 
-/* ── PREVIEW ── */
 .preview-area{margin-top:1.5rem;display:none}
 .preview-img{width:100%;max-height:320px;object-fit:contain;border-radius:12px;border:1px solid var(--border)}
 .file-info{font-size:.8rem;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace}
 .action-row{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}
 
-/* ── BUTTONS ── */
 .btn{padding:.65rem 1.4rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:background .15s,transform .1s,opacity .15s;border:none;display:inline-flex;align-items:center;gap:6px}
 .btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover:not(:disabled){background:#6a58e0;transform:translateY(-1px)}
 .btn-primary:active:not(:disabled){transform:scale(.98)}
 .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
 .btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:.45rem 1rem;font-size:.82rem}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-primary:disabled{transform:none}
 
-/* ── OR DIVIDER ── */
 .or-divider{text-align:center;color:var(--muted);font-size:.85rem;margin:1.5rem 0;display:flex;align-items:center;gap:12px}
 .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ── TEXT INPUT ── */
 .text-input-area{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1rem 1.2rem;transition:border-color .2s}
 .text-input-area:focus-within{border-color:rgba(124,106,247,.5)}
 .text-input-area label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:6px;font-family:'DM Mono',monospace}
@@ -105,16 +104,13 @@ textarea{width:100%;background:transparent;border:none;outline:none;color:var(--
 textarea::placeholder{color:rgba(139,135,170,.4)}
 .char-hint{font-size:.75rem;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace}
 
-/* ── SOLVING ── */
 .solving{display:none;text-align:center;padding:2.5rem;background:var(--surface);border-radius:20px;margin-top:1.5rem}
 .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}
 @keyframes spin{to{transform:rotate(360deg)}}
 .solving p{color:var(--muted);font-size:.9rem}
-/* FIX: dots animation using ::after on a span */
 .solving p .dots-anim::after{content:'';animation:dots-anim 1.5s steps(1) infinite}
 @keyframes dots-anim{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}100%{content:''}}
 
-/* ── RESULT CARD ── */
 .result-card{display:none;margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;animation:fadeUp .3s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .result-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:rgba(124,106,247,.06)}
@@ -133,7 +129,6 @@ textarea::placeholder{color:rgba(139,135,170,.4)}
 .explanation{background:var(--surface2);border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;font-size:.88rem;color:var(--muted);line-height:1.7}
 .explanation strong{color:var(--text)}
 
-/* ── EXAMPLES ── */
 .examples{margin-top:3rem}
 .examples h2{font-size:.8rem;color:var(--muted);margin-bottom:1rem;font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
 .example-chips{display:flex;gap:8px;flex-wrap:wrap}
@@ -141,25 +136,21 @@ textarea::placeholder{color:rgba(139,135,170,.4)}
 .chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(124,106,247,.06)}
 .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* ── ERROR ── */
 .error-box{display:none;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;color:var(--red);font-size:.88rem;line-height:1.6}
+.size-warning{display:none;color:var(--orange);font-size:.8rem;margin-top:6px;font-family:'DM Mono',monospace}
 
-/* ── FILE SIZE WARNING ── */
-.size-warning{display:none;color:#f59e0b;font-size:.8rem;margin-top:6px;font-family:'DM Mono',monospace}
-
-/* ── FOOTER ── */
 footer{position:relative;z-index:10;text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem;line-height:1.8}
 footer a{color:var(--accent2);text-decoration:none}
 footer a:hover{text-decoration:underline}
 
-/* ── RESPONSIVE ── */
 @media(max-width:600px){
   header{padding:1rem 1.2rem}
   main{padding:2rem 1rem 3rem}
   .hero h1{font-size:1.9rem}
   .upload-zone{padding:1.8rem 1.2rem}
-  .action-row{flex-direction:column}
+  .action-row,.api-input-row{flex-direction:column}
   .btn{width:100%;justify-content:center}
+  .api-input{width:100%}
 }
 </style>
 </head>
@@ -172,16 +163,35 @@ footer a:hover{text-decoration:underline}
     <div class="logo-icon" aria-hidden="true">∑</div>
     MathSnap
   </a>
-  <span class="badge" aria-label="Free, no login required">Free · No login</span>
+  <div class="header-right">
+    <span class="api-status missing" id="apiStatusBadge">⚡ API key needed</span>
+    <span class="badge" aria-label="Free, no login required">Free</span>
+  </div>
 </header>
 
 <main>
   <div class="hero">
     <h1>Solve any math problem<br><em>instantly</em> — free</h1>
-    <p>Upload a photo of your math problem or type it in. Get clear, step-by-step solutions in seconds. Algebra, calculus, geometry &amp; more.</p>
+    <p>Upload a photo or type any math problem. Get clear, step-by-step solutions in seconds.</p>
   </div>
 
-  <!-- Hidden file input, triggered by label/keyboard/JS -->
+  <!-- API KEY SETUP -->
+  <div class="api-setup" id="apiSetup">
+    <div class="api-setup-header">
+      <span style="font-size:20px">⚡</span>
+      <h2>One-time setup: Enter your Anthropic API Key</h2>
+    </div>
+    <p>MathSnap uses Anthropic's AI to solve problems. You need a free API key to get started.<br>
+    👉 Get yours at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> → Sign up free → API Keys → Create Key<br>
+    <small style="color:rgba(139,135,170,.6)">🔒 Your key is saved only in your browser. Never sent to our servers.</small></p>
+    <div class="api-input-row">
+      <input type="password" class="api-input" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+      <button class="btn btn-primary btn-sm" id="saveKeyBtn">Save Key</button>
+      <button class="btn btn-ghost btn-sm" id="clearKeyBtn" style="display:none">Clear</button>
+    </div>
+    <div id="keyFeedback" style="font-size:.8rem;margin-top:8px;font-family:monospace"></div>
+  </div>
+
   <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" id="fileInput" aria-label="Upload math problem image">
 
   <div class="upload-zone" id="dropzone" role="button" tabindex="0" aria-label="Upload or drag-and-drop a math problem image">
@@ -189,13 +199,11 @@ footer a:hover{text-decoration:underline}
     <h3>Drop your math problem here</h3>
     <p>Drag &amp; drop or <strong style="color:var(--accent2)">click to browse</strong> a photo of any math problem</p>
     <div class="formats" aria-label="Supported formats">
-      <span class="fmt-tag">JPG</span>
-      <span class="fmt-tag">PNG</span>
-      <span class="fmt-tag">WEBP</span>
-      <span class="fmt-tag">GIF</span>
+      <span class="fmt-tag">JPG</span><span class="fmt-tag">PNG</span>
+      <span class="fmt-tag">WEBP</span><span class="fmt-tag">GIF</span>
     </div>
   </div>
-  <div class="size-warning" id="sizeWarning" role="alert">⚠ Image is large — compressing for best results</div>
+  <div class="size-warning" id="sizeWarning" role="alert">⚠ Large image detected — may take a moment</div>
 
   <div class="preview-area" id="previewArea">
     <img class="preview-img" id="previewImg" alt="Uploaded math problem">
@@ -210,7 +218,7 @@ footer a:hover{text-decoration:underline}
 
   <div class="text-input-area">
     <label for="textInput">type or paste your math problem</label>
-    <textarea id="textInput" placeholder="e.g. Solve for x: 3x² + 5x - 2 = 0  |  ∫ sin(x)cos(x) dx  |  A train travels 60 km/h for 2.5 hours..." maxlength="2000" aria-describedby="charHint"></textarea>
+    <textarea id="textInput" placeholder="e.g. Solve for x: 3x² + 5x - 2 = 0  |  ∫ sin(x)cos(x) dx  |  A train travels 60 km/h..." maxlength="2000" aria-describedby="charHint"></textarea>
     <div class="char-hint" id="charHint"><span id="charCount">0</span> / 2000</div>
     <div class="action-row" style="margin-top:.75rem">
       <button class="btn btn-primary" id="solveTextBtn">✦ Solve</button>
@@ -218,13 +226,11 @@ footer a:hover{text-decoration:underline}
   </div>
 
   <div class="error-box" id="errorBox" role="alert" aria-live="assertive"></div>
-
-  <div class="solving" id="solvingBox" aria-live="polite" aria-label="Solving in progress">
+  <div class="solving" id="solvingBox" aria-live="polite">
     <div class="spinner" aria-hidden="true"></div>
     <p>Solving your problem<span class="dots-anim" aria-hidden="true"></span></p>
   </div>
-
-  <div class="result-card" id="resultCard" aria-live="polite" aria-label="Math solution">
+  <div class="result-card" id="resultCard" aria-live="polite">
     <div class="result-header">
       <div class="status-dot" aria-hidden="true"></div>
       <h3>Solution</h3>
@@ -235,137 +241,159 @@ footer a:hover{text-decoration:underline}
   <section class="examples" aria-label="Example problems">
     <h2>// try an example</h2>
     <div class="example-chips" role="list">
-      <button class="chip" role="listitem" type="button">2x + 5 = 13</button>
-      <button class="chip" role="listitem" type="button">∫ x² dx</button>
-      <button class="chip" role="listitem" type="button">sin²(x) + cos²(x)</button>
-      <button class="chip" role="listitem" type="button">Derivative of 3x³ − 2x² + 7</button>
-      <button class="chip" role="listitem" type="button">Area of circle, radius 7</button>
-      <button class="chip" role="listitem" type="button">Solve: x² − 9 = 0</button>
-      <button class="chip" role="listitem" type="button">Pythagorean theorem: a=3, b=4</button>
-      <button class="chip" role="listitem" type="button">Factor: x² + 5x + 6</button>
+      <button class="chip" type="button">2x + 5 = 13</button>
+      <button class="chip" type="button">∫ x² dx</button>
+      <button class="chip" type="button">sin²(x) + cos²(x)</button>
+      <button class="chip" type="button">Derivative of 3x³ − 2x² + 7</button>
+      <button class="chip" type="button">Area of circle, radius 7</button>
+      <button class="chip" type="button">Solve: x² − 9 = 0</button>
+      <button class="chip" type="button">Pythagorean theorem: a=3, b=4</button>
+      <button class="chip" type="button">Factor: x² + 5x + 6</button>
     </div>
   </section>
 </main>
 
 <footer>
-  <p>MathSnap — Free AI math solver · <a href="/privacy.html">Privacy Policy</a> · No data stored · No login required</p>
-  <p style="margin-top:.4rem">Supports Algebra · Calculus · Geometry · Statistics · Word Problems</p>
+  <p>MathSnap — Free AI math solver · <a href="/mathsnap/privacy.html">Privacy Policy</a> · Your API key stays in your browser only</p>
+  <p style="margin-top:.4rem">Algebra · Calculus · Geometry · Statistics · Word Problems</p>
 </footer>
 
 <script>
+/* ── API KEY MANAGEMENT ── */
+const KEY_STORAGE = 'mathsnap_apikey';
+let apiKey = '';
+
+function loadSavedKey() {
+  try {
+    const saved = localStorage.getItem(KEY_STORAGE);
+    if (saved) {
+      apiKey = saved;
+      document.getElementById('apiKeyInput').value = '•'.repeat(20);
+      document.getElementById('apiKeyInput').classList.add('saved');
+      document.getElementById('clearKeyBtn').style.display = 'inline-flex';
+      document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--green)">✓ API key saved in your browser</span>';
+      document.getElementById('apiStatusBadge').textContent = '✓ Ready';
+      document.getElementById('apiStatusBadge').className = 'api-status ok';
+      // Collapse setup box
+      document.getElementById('apiSetup').style.borderColor = 'rgba(74,222,128,.2)';
+    }
+  } catch(e) {}
+}
+
+document.getElementById('saveKeyBtn').addEventListener('click', () => {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if (!val || val.startsWith('•')) { 
+    document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--red)">Please enter a valid API key</span>';
+    return;
+  }
+  if (!val.startsWith('sk-ant-')) {
+    document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--orange)">⚠ Key should start with sk-ant- — double check?</span>';
+  }
+  try { localStorage.setItem(KEY_STORAGE, val); } catch(e) {}
+  apiKey = val;
+  document.getElementById('apiKeyInput').value = '•'.repeat(20);
+  document.getElementById('apiKeyInput').classList.add('saved');
+  document.getElementById('clearKeyBtn').style.display = 'inline-flex';
+  document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--green)">✓ Saved! Ready to solve.</span>';
+  document.getElementById('apiStatusBadge').textContent = '✓ Ready';
+  document.getElementById('apiStatusBadge').className = 'api-status ok';
+  document.getElementById('apiSetup').style.borderColor = 'rgba(74,222,128,.2)';
+});
+
+document.getElementById('clearKeyBtn').addEventListener('click', () => {
+  try { localStorage.removeItem(KEY_STORAGE); } catch(e) {}
+  apiKey = '';
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('apiKeyInput').classList.remove('saved');
+  document.getElementById('clearKeyBtn').style.display = 'none';
+  document.getElementById('keyFeedback').innerHTML = '';
+  document.getElementById('apiStatusBadge').textContent = '⚡ API key needed';
+  document.getElementById('apiStatusBadge').className = 'api-status missing';
+  document.getElementById('apiSetup').style.borderColor = 'rgba(251,146,60,.4)';
+});
+
+document.getElementById('apiKeyInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('saveKeyBtn').click();
+});
+
 /* ── STATE ── */
 let currentImageB64 = null;
 let currentMimeType = null;
 let isSolving = false;
 const MAX_FILE_SIZE_MB = 8;
-const MAX_BASE64_CHARS = 5_000_000; // ~3.75MB raw
+const MAX_B64 = 5_000_000;
 
 /* ── ELEMENTS ── */
-const fileInput    = document.getElementById('fileInput');
-const dropzone     = document.getElementById('dropzone');
-const previewArea  = document.getElementById('previewArea');
-const previewImg   = document.getElementById('previewImg');
-const fileInfo     = document.getElementById('fileInfo');
-const solveBtn     = document.getElementById('solveBtn');
-const clearBtn     = document.getElementById('clearBtn');
-const textInput    = document.getElementById('textInput');
-const charCount    = document.getElementById('charCount');
-const solveTextBtn = document.getElementById('solveTextBtn');
-const solvingBox   = document.getElementById('solvingBox');
-const resultCard   = document.getElementById('resultCard');
-const resultBody   = document.getElementById('resultBody');
-const errorBox     = document.getElementById('errorBox');
-const sizeWarning  = document.getElementById('sizeWarning');
+const fileInput   = document.getElementById('fileInput');
+const dropzone    = document.getElementById('dropzone');
+const previewArea = document.getElementById('previewArea');
+const previewImg  = document.getElementById('previewImg');
+const fileInfo    = document.getElementById('fileInfo');
+const solveBtn    = document.getElementById('solveBtn');
+const clearBtn    = document.getElementById('clearBtn');
+const textInput   = document.getElementById('textInput');
+const charCount   = document.getElementById('charCount');
+const solveTextBtn= document.getElementById('solveTextBtn');
+const solvingBox  = document.getElementById('solvingBox');
+const resultCard  = document.getElementById('resultCard');
+const resultBody  = document.getElementById('resultBody');
+const errorBox    = document.getElementById('errorBox');
+const sizeWarning = document.getElementById('sizeWarning');
 
-/* ── FILE INPUT ── */
-// Click on zone opens file picker
+/* ── FILE UPLOAD ── */
 dropzone.addEventListener('click', () => fileInput.click());
 dropzone.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
 });
-
 fileInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (file) loadImage(file);
-  fileInput.value = ''; // reset so same file can be re-selected
+  const f = e.target.files[0];
+  if (f) loadImage(f);
+  fileInput.value = '';
 });
-
-/* ── DRAG & DROP ── */
-dropzone.addEventListener('dragover',  e => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
 dropzone.addEventListener('dragleave', e => { if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('drag'); });
 dropzone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropzone.classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) loadImage(file);
+  e.preventDefault(); dropzone.classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) loadImage(f);
   else showError('Please drop an image file (JPG, PNG, or WEBP).');
 });
 
-/* ── LOAD IMAGE ── */
 function loadImage(file) {
   if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-    showError(`Image too large (max ${MAX_FILE_SIZE_MB}MB). Please resize and try again.`);
-    return;
+    showError(`Image too large (max ${MAX_FILE_SIZE_MB}MB). Please resize and try again.`); return;
   }
-
   currentMimeType = file.type || 'image/jpeg';
-  const sizeMB = (file.size / 1024 / 1024).toFixed(2);
-
   const reader = new FileReader();
   reader.onload = ev => {
     const dataUrl = ev.target.result;
     currentImageB64 = dataUrl.split(',')[1];
-
-    if (currentImageB64.length > MAX_BASE64_CHARS) {
-      sizeWarning.style.display = 'block';
-    } else {
-      sizeWarning.style.display = 'none';
-    }
-
+    sizeWarning.style.display = currentImageB64.length > MAX_B64 ? 'block' : 'none';
     previewImg.src = dataUrl;
-    fileInfo.textContent = `${file.name}  •  ${sizeMB} MB`;
+    fileInfo.textContent = `${file.name} • ${(file.size/1024/1024).toFixed(2)} MB`;
     previewArea.style.display = 'block';
-    hideResult();
-    errorBox.style.display = 'none';
+    hideResult(); errorBox.style.display = 'none';
   };
-  reader.onerror = () => showError('Could not read the image file. Please try another.');
+  reader.onerror = () => showError('Could not read the image file.');
   reader.readAsDataURL(file);
 }
 
-/* ── CLEAR ── */
 clearBtn.addEventListener('click', () => {
-  currentImageB64 = null;
-  currentMimeType = null;
-  previewArea.style.display = 'none';
-  previewImg.src = '';
+  currentImageB64 = null; currentMimeType = null;
+  previewArea.style.display = 'none'; previewImg.src = '';
   sizeWarning.style.display = 'none';
-  hideResult();
-  errorBox.style.display = 'none';
+  hideResult(); errorBox.style.display = 'none';
 });
 
-/* ── CHAR COUNTER ── */
-textInput.addEventListener('input', () => {
-  charCount.textContent = textInput.value.length;
-});
+textInput.addEventListener('input', () => { charCount.textContent = textInput.value.length; });
 
-/* ── SOLVE BUTTONS ── */
-solveBtn.addEventListener('click', () => {
-  if (currentImageB64 && !isSolving) solveImage();
-});
-
-solveTextBtn.addEventListener('click', () => {
-  const q = textInput.value.trim();
-  if (q && !isSolving) solveText(q);
-});
-
+solveBtn.addEventListener('click', () => { if (currentImageB64 && !isSolving) solveImage(); });
+solveTextBtn.addEventListener('click', () => { const q = textInput.value.trim(); if (q && !isSolving) solveText(q); });
 textInput.addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-    const q = textInput.value.trim();
-    if (q && !isSolving) solveText(q);
+    const q = textInput.value.trim(); if (q && !isSolving) solveText(q);
   }
 });
-
-/* ── EXAMPLE CHIPS ── */
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
     textInput.value = chip.textContent;
@@ -376,214 +404,157 @@ document.querySelectorAll('.chip').forEach(chip => {
 
 /* ── UI HELPERS ── */
 function showSolving() {
-  isSolving = true;
-  solvingBox.style.display = 'block';
-  resultCard.style.display = 'none';
-  errorBox.style.display = 'none';
-  setButtonsDisabled(true);
+  isSolving = true; solvingBox.style.display = 'block';
+  resultCard.style.display = 'none'; errorBox.style.display = 'none';
+  setDisabled(true);
   solvingBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-
-function hideResult() {
-  solvingBox.style.display = 'none';
-  resultCard.style.display = 'none';
-}
-
-function doneSolving() {
-  isSolving = false;
-  setButtonsDisabled(false);
-}
-
-function setButtonsDisabled(state) {
-  solveBtn.disabled = state;
-  solveTextBtn.disabled = state;
-}
-
+function hideResult() { solvingBox.style.display = 'none'; resultCard.style.display = 'none'; }
+function doneSolving() { isSolving = false; setDisabled(false); }
+function setDisabled(s) { solveBtn.disabled = s; solveTextBtn.disabled = s; }
 function showError(msg) {
-  isSolving = false;
-  solvingBox.style.display = 'none';
-  errorBox.style.display = 'block';
-  errorBox.textContent = '⚠ ' + msg;
-  setButtonsDisabled(false);
+  isSolving = false; solvingBox.style.display = 'none';
+  errorBox.style.display = 'block'; errorBox.textContent = '⚠ ' + msg;
+  setDisabled(false);
 }
 
-/* ── SAFE TEXT ESCAPING (XSS prevention) ── */
-function esc(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+/* ── XSS SAFE HELPERS ── */
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function safeRich(s) {
+  return esc(s)
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*([^*]{1,100})\*\*/g,'<strong>$1</strong>');
 }
 
-/* ── SAFE RICH TEXT: allows only backtick code and **bold** ── */
-function safeRichText(str) {
-  return esc(str)
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/\*\*([^*]{1,100})\*\*/g, '<strong>$1</strong>');
-}
-
-/* ── API ── */
-function buildSystemPrompt() {
-  return `You are an expert math tutor. Solve math problems clearly and educationally. Always respond with ONLY valid JSON — no markdown fences, no extra text before or after. If you cannot read the image or cannot solve the problem, still return valid JSON with an error field.`;
-}
-
-function buildUserPrompt(q) {
-  const instruction = q
-    ? `Solve this math problem: ${q}`
-    : `Read the math problem shown in this image and solve it.`;
-
-  return `${instruction}
-
-Return ONLY this JSON structure:
-{
-  "problem": "restate the problem clearly in 1 sentence",
-  "answer": "the final answer, concise",
-  "steps": [
-    {"num": 1, "text": "description — use backticks for expressions like \`3x + 2\` and **bold** for key results"},
-    {"num": 2, "text": "..."}
-  ],
-  "explanation": "1-2 sentence conceptual note about the method used",
-  "error": null
-}
-
-If unsolvable or unreadable, set "error" to a short explanation and leave other fields as empty strings.
-Use plain text only — no LaTeX, no HTML. Keep steps educational and complete.`;
+/* ── API CALL ── */
+function checkApiKey() {
+  if (!apiKey) {
+    showError('Please enter your Anthropic API key above to start solving problems.');
+    document.getElementById('apiKeyInput').focus();
+    document.getElementById('apiSetup').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return false;
+  }
+  return true;
 }
 
 async function callAPI(messages) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 1000,
-      system: buildSystemPrompt(),
+      system: 'You are an expert math tutor. Always respond with ONLY valid JSON — no markdown fences, no extra text.',
       messages
     })
   });
-
   if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    throw new Error(errData.error?.message || `Server error (${res.status})`);
+    const err = await res.json().catch(() => ({}));
+    const msg = err.error?.message || '';
+    if (res.status === 401) throw new Error('Invalid API key. Please check and re-enter your key.');
+    if (res.status === 429) throw new Error('Rate limit reached. Please wait a moment and try again.');
+    throw new Error(msg || `Server error (${res.status})`);
   }
-
   const data = await res.json();
-  const rawText = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
-
-  // Strip accidental markdown fences
-  const clean = rawText.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/,'').trim();
-
+  const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+  const clean = raw.replace(/^```[a-z]*\n?/i,'').replace(/\n?```$/,'').trim();
   let parsed = null;
-  try { parsed = JSON.parse(clean); } catch(_) { parsed = null; }
-  return { parsed, raw: rawText };
+  try { parsed = JSON.parse(clean); } catch(_) {}
+  return { parsed, raw };
+}
+
+function buildPrompt(q) {
+  const instruction = q ? `Solve this math problem: ${q}` : 'Read and solve the math problem in this image.';
+  return `${instruction}
+
+Return ONLY this JSON:
+{"problem":"restate clearly","answer":"final answer","steps":[{"num":1,"text":"use \`backticks\` for expressions, **bold** for key results"}],"explanation":"1-2 sentence method note","error":null}
+
+If unsolvable set "error" to explanation. Plain text only, no LaTeX.`;
 }
 
 async function solveImage() {
+  if (!checkApiKey()) return;
   showSolving();
   try {
-    const messages = [{
-      role: 'user',
-      content: [
-        { type: 'image', source: { type: 'base64', media_type: currentMimeType, data: currentImageB64 } },
-        { type: 'text', text: buildUserPrompt('') }
+    const { parsed, raw } = await callAPI([{
+      role:'user',
+      content:[
+        {type:'image',source:{type:'base64',media_type:currentMimeType,data:currentImageB64}},
+        {type:'text',text:buildPrompt('')}
       ]
-    }];
-    const { parsed, raw } = await callAPI(messages);
+    }]);
     renderResult(parsed, raw);
-  } catch(e) {
-    showError('Could not reach the solver. Please check your connection and try again.');
-    console.error(e);
-  } finally {
-    doneSolving();
-  }
+  } catch(e) { showError(e.message || 'Connection error. Please try again.'); }
+  finally { doneSolving(); }
 }
 
 async function solveText(q) {
+  if (!checkApiKey()) return;
   showSolving();
   try {
-    const messages = [{ role: 'user', content: buildUserPrompt(q) }];
-    const { parsed, raw } = await callAPI(messages);
+    const { parsed, raw } = await callAPI([{role:'user',content:buildPrompt(q)}]);
     renderResult(parsed, raw);
-  } catch(e) {
-    showError('Could not reach the solver. Please check your connection and try again.');
-    console.error(e);
-  } finally {
-    doneSolving();
-  }
+  } catch(e) { showError(e.message || 'Connection error. Please try again.'); }
+  finally { doneSolving(); }
 }
 
-/* ── RENDER RESULT ── */
 function renderResult(parsed, raw) {
   solvingBox.style.display = 'none';
   resultCard.style.display = 'block';
 
   if (!parsed) {
-    resultBody.innerHTML = `
-      <div class="explanation" style="color:var(--text)">
-        ${esc(raw).replace(/\n/g, '<br>')}
-      </div>
+    resultBody.innerHTML = `<div class="explanation" style="color:var(--text)">${esc(raw).replace(/\n/g,'<br>')}</div>
       <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>`;
-    attachCopyBtn();
-    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    return;
+    attachCopy(); resultCard.scrollIntoView({behavior:'smooth',block:'nearest'}); return;
   }
-
   if (parsed.error) {
-    resultBody.innerHTML = `
-      <div class="explanation" style="color:var(--red)">
-        <strong>Could not solve:</strong> ${esc(parsed.error)}
-      </div>`;
-    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    return;
+    resultBody.innerHTML = `<div class="explanation" style="color:var(--red)"><strong>Could not solve:</strong> ${esc(parsed.error)}</div>`;
+    resultCard.scrollIntoView({behavior:'smooth',block:'nearest'}); return;
   }
 
   let stepsHtml = '';
   if (Array.isArray(parsed.steps) && parsed.steps.length) {
-    stepsHtml = `<p class="steps-label">step-by-step solution</p>`;
+    stepsHtml = '<p class="steps-label">step-by-step solution</p>';
     parsed.steps.forEach(s => {
-      const num = parseInt(s.num, 10) || '?';
-      const text = safeRichText(s.text || '');
-      stepsHtml += `
-        <div class="step">
-          <div class="step-num" aria-hidden="true">${num}</div>
-          <div class="step-text">${text}</div>
-        </div>`;
+      stepsHtml += `<div class="step"><div class="step-num" aria-hidden="true">${parseInt(s.num,10)||'?'}</div><div class="step-text">${safeRich(s.text||'')}</div></div>`;
     });
   }
-
-  const explanationHtml = parsed.explanation
-    ? `<div class="explanation"><strong>Method:</strong> ${esc(parsed.explanation)}</div>`
-    : '';
 
   resultBody.innerHTML = `
     <div class="answer-box" role="region" aria-label="Final answer">
       <div class="answer-label">final answer</div>
-      <div class="answer-value">${esc(parsed.answer || '—')}</div>
+      <div class="answer-value">${esc(parsed.answer||'—')}</div>
     </div>
     ${stepsHtml}
-    ${explanationHtml}
-    <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>
-  `;
-
-  attachCopyBtn();
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    ${parsed.explanation?`<div class="explanation"><strong>Method:</strong> ${esc(parsed.explanation)}</div>`:''}
+    <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>`;
+  attachCopy();
+  resultCard.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function attachCopyBtn() {
+function attachCopy() {
   const btn = document.getElementById('copyBtn');
   if (!btn) return;
   btn.addEventListener('click', function() {
-    const text = resultBody.innerText.replace('Copy solution', '').trim();
+    const text = resultBody.innerText.replace('Copy solution','').trim();
     navigator.clipboard.writeText(text).then(() => {
       btn.textContent = 'Copied ✓';
       setTimeout(() => { btn.textContent = 'Copy solution'; }, 2000);
-    }).catch(() => {
-      btn.textContent = 'Copy failed';
-    });
+    }).catch(() => { btn.textContent = 'Copy failed'; });
   });
 }
+
+/* ── INIT ── */
+loadSavedKey();
 </script>
 </body>
 </html>
