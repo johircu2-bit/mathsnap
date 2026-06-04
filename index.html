@@ -9,10 +9,7 @@
 <meta property="og:description" content="Take a photo of any math problem and get instant step-by-step solutions. 100% free, no login required.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://johircu2-bit.github.io/mathsnap">
-<meta property="og:image" content="https://johircu2-bit.github.io/mathsnap/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="MathSnap — Free Photo Math Solver">
-<meta name="twitter:description" content="Solve any math problem from a photo. Free, instant, step-by-step.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://johircu2-bit.github.io/mathsnap">
 <script type="application/ld+json">
@@ -23,8 +20,7 @@
   "description": "Free photo math solver with step-by-step solutions",
   "url": "https://johircu2-bit.github.io/mathsnap",
   "applicationCategory": "EducationApplication",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "featureList": ["Photo math solving", "Step-by-step solutions", "Algebra", "Calculus", "Geometry"]
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,20 +42,24 @@ header{position:relative;z-index:10;padding:1.25rem 2rem;display:flex;align-item
 .logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text);display:flex;align-items:center;gap:8px;text-decoration:none}
 .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .header-right{display:flex;align-items:center;gap:10px}
-.badge{font-size:11px;background:rgba(124,106,247,0.15);border:1px solid rgba(124,106,247,0.3);color:var(--accent2);padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace}
 .api-status{font-size:11px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;border:1px solid}
 .api-status.ok{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--green)}
 .api-status.missing{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:var(--orange)}
+.free-badge{font-size:11px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace}
 
 main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
 
-/* API KEY SETUP BOX */
-.api-setup{background:var(--surface);border:1.5px solid rgba(251,146,60,.4);border-radius:20px;padding:1.5rem;margin-bottom:2rem}
-.api-setup-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.api-setup-header h2{font-size:1rem;font-weight:500;color:var(--orange)}
+/* API KEY SETUP */
+.api-setup{background:var(--surface);border:1.5px solid rgba(74,222,128,.3);border-radius:20px;padding:1.5rem;margin-bottom:2rem}
+.api-setup.has-key{border-color:rgba(74,222,128,.2)}
+.api-setup-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.api-setup-header h2{font-size:1rem;font-weight:500;color:var(--green)}
 .api-setup p{font-size:.875rem;color:var(--muted);line-height:1.7;margin-bottom:12px}
 .api-setup a{color:var(--accent2);text-decoration:none}
 .api-setup a:hover{text-decoration:underline}
+.steps-mini{background:var(--surface2);border-radius:10px;padding:.75rem 1rem;margin-bottom:12px;font-size:.82rem;color:var(--muted);line-height:2}
+.steps-mini b{color:var(--text)}
+.steps-mini a{color:var(--accent2);font-weight:500}
 .api-input-row{display:flex;gap:8px}
 .api-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.6rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:.85rem;outline:none;transition:border-color .2s}
 .api-input:focus{border-color:var(--accent)}
@@ -71,8 +71,8 @@ main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:2.5rem 1
 .hero h1 em{font-style:italic;color:var(--accent2)}
 .hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
 
-.upload-zone{background:var(--surface);border:1.5px dashed var(--border);border-radius:20px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden}
-.upload-zone:hover,.upload-zone.drag,.upload-zone:focus-within{border-color:var(--accent);background:rgba(124,106,247,0.05)}
+.upload-zone{background:var(--surface);border:1.5px dashed var(--border);border-radius:20px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(124,106,247,0.05)}
 #fileInput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .upload-icon{width:56px;height:56px;background:rgba(124,106,247,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px}
 .upload-zone h3{font-size:1.05rem;font-weight:500;margin-bottom:6px}
@@ -85,7 +85,7 @@ main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:2.5rem 1
 .file-info{font-size:.8rem;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace}
 .action-row{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}
 
-.btn{padding:.65rem 1.4rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:background .15s,transform .1s,opacity .15s;border:none;display:inline-flex;align-items:center;gap:6px}
+.btn{padding:.65rem 1.4rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .15s;border:none;display:inline-flex;align-items:center;gap:6px}
 .btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover:not(:disabled){background:#6a58e0;transform:translateY(-1px)}
 .btn-primary:active:not(:disabled){transform:scale(.98)}
@@ -134,14 +134,11 @@ textarea::placeholder{color:rgba(139,135,170,.4)}
 .example-chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{background:var(--surface);border:1px solid var(--border);padding:.45rem .9rem;border-radius:10px;font-size:.82rem;cursor:pointer;transition:all .15s;color:var(--muted)}
 .chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(124,106,247,.06)}
-.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 .error-box{display:none;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:1rem 1.2rem;margin-top:1rem;color:var(--red);font-size:.88rem;line-height:1.6}
-.size-warning{display:none;color:var(--orange);font-size:.8rem;margin-top:6px;font-family:'DM Mono',monospace}
 
 footer{position:relative;z-index:10;text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem;line-height:1.8}
 footer a{color:var(--accent2);text-decoration:none}
-footer a:hover{text-decoration:underline}
 
 @media(max-width:600px){
   header{padding:1rem 1.2rem}
@@ -150,7 +147,6 @@ footer a:hover{text-decoration:underline}
   .upload-zone{padding:1.8rem 1.2rem}
   .action-row,.api-input-row{flex-direction:column}
   .btn{width:100%;justify-content:center}
-  .api-input{width:100%}
 }
 </style>
 </head>
@@ -164,8 +160,8 @@ footer a:hover{text-decoration:underline}
     MathSnap
   </a>
   <div class="header-right">
-    <span class="api-status missing" id="apiStatusBadge">⚡ API key needed</span>
-    <span class="badge" aria-label="Free, no login required">Free</span>
+    <span class="api-status missing" id="apiStatusBadge">⚡ Setup needed</span>
+    <span class="free-badge">100% Free</span>
   </div>
 </header>
 
@@ -175,35 +171,37 @@ footer a:hover{text-decoration:underline}
     <p>Upload a photo or type any math problem. Get clear, step-by-step solutions in seconds.</p>
   </div>
 
-  <!-- API KEY SETUP -->
+  <!-- GEMINI API KEY SETUP -->
   <div class="api-setup" id="apiSetup">
     <div class="api-setup-header">
-      <span style="font-size:20px">⚡</span>
-      <h2>One-time setup: Enter your Anthropic API Key</h2>
+      <span style="font-size:20px">🔑</span>
+      <h2>One-time free setup: Google Gemini API Key</h2>
     </div>
-    <p>MathSnap uses Anthropic's AI to solve problems. You need a free API key to get started.<br>
-    👉 Get yours at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> → Sign up free → API Keys → Create Key<br>
-    <small style="color:rgba(139,135,170,.6)">🔒 Your key is saved only in your browser. Never sent to our servers.</small></p>
+    <div class="steps-mini">
+      <b>Step 1:</b> Go to <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a><br>
+      <b>Step 2:</b> Click <b>"Create API Key"</b> → Select any project → Copy the key<br>
+      <b>Step 3:</b> Paste it below → Done! 🎉 (No credit card needed)
+    </div>
     <div class="api-input-row">
-      <input type="password" class="api-input" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+      <input type="password" class="api-input" id="apiKeyInput" placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
       <button class="btn btn-primary btn-sm" id="saveKeyBtn">Save Key</button>
       <button class="btn btn-ghost btn-sm" id="clearKeyBtn" style="display:none">Clear</button>
     </div>
     <div id="keyFeedback" style="font-size:.8rem;margin-top:8px;font-family:monospace"></div>
+    <p style="font-size:.75rem;color:rgba(139,135,170,.5);margin-top:8px">🔒 Key saved only in your browser. Never sent to our servers. Free: 1500 requests/day.</p>
   </div>
 
   <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" id="fileInput" aria-label="Upload math problem image">
 
-  <div class="upload-zone" id="dropzone" role="button" tabindex="0" aria-label="Upload or drag-and-drop a math problem image">
+  <div class="upload-zone" id="dropzone" role="button" tabindex="0" aria-label="Upload math problem image">
     <div class="upload-icon" aria-hidden="true">📸</div>
     <h3>Drop your math problem here</h3>
-    <p>Drag &amp; drop or <strong style="color:var(--accent2)">click to browse</strong> a photo of any math problem</p>
-    <div class="formats" aria-label="Supported formats">
+    <p>Drag &amp; drop or <strong style="color:var(--accent2)">click to browse</strong> a photo</p>
+    <div class="formats">
       <span class="fmt-tag">JPG</span><span class="fmt-tag">PNG</span>
       <span class="fmt-tag">WEBP</span><span class="fmt-tag">GIF</span>
     </div>
   </div>
-  <div class="size-warning" id="sizeWarning" role="alert">⚠ Large image detected — may take a moment</div>
 
   <div class="preview-area" id="previewArea">
     <img class="preview-img" id="previewImg" alt="Uploaded math problem">
@@ -218,14 +216,14 @@ footer a:hover{text-decoration:underline}
 
   <div class="text-input-area">
     <label for="textInput">type or paste your math problem</label>
-    <textarea id="textInput" placeholder="e.g. Solve for x: 3x² + 5x - 2 = 0  |  ∫ sin(x)cos(x) dx  |  A train travels 60 km/h..." maxlength="2000" aria-describedby="charHint"></textarea>
-    <div class="char-hint" id="charHint"><span id="charCount">0</span> / 2000</div>
+    <textarea id="textInput" placeholder="e.g. Solve for x: 3x² + 5x - 2 = 0  |  ∫ sin(x)cos(x) dx  |  Area of circle radius 7..." maxlength="2000"></textarea>
+    <div class="char-hint"><span id="charCount">0</span> / 2000 &nbsp;·&nbsp; Ctrl+Enter to solve</div>
     <div class="action-row" style="margin-top:.75rem">
       <button class="btn btn-primary" id="solveTextBtn">✦ Solve</button>
     </div>
   </div>
 
-  <div class="error-box" id="errorBox" role="alert" aria-live="assertive"></div>
+  <div class="error-box" id="errorBox" role="alert"></div>
   <div class="solving" id="solvingBox" aria-live="polite">
     <div class="spinner" aria-hidden="true"></div>
     <p>Solving your problem<span class="dots-anim" aria-hidden="true"></span></p>
@@ -240,7 +238,7 @@ footer a:hover{text-decoration:underline}
 
   <section class="examples" aria-label="Example problems">
     <h2>// try an example</h2>
-    <div class="example-chips" role="list">
+    <div class="example-chips">
       <button class="chip" type="button">2x + 5 = 13</button>
       <button class="chip" type="button">∫ x² dx</button>
       <button class="chip" type="button">sin²(x) + cos²(x)</button>
@@ -254,62 +252,56 @@ footer a:hover{text-decoration:underline}
 </main>
 
 <footer>
-  <p>MathSnap — Free AI math solver · <a href="/mathsnap/privacy.html">Privacy Policy</a> · Your API key stays in your browser only</p>
-  <p style="margin-top:.4rem">Algebra · Calculus · Geometry · Statistics · Word Problems</p>
+  <p>MathSnap — Free AI math solver powered by Google Gemini · <a href="privacy.html">Privacy Policy</a></p>
+  <p style="margin-top:.3rem">Algebra · Calculus · Geometry · Statistics · Word Problems · 100% Free</p>
 </footer>
 
 <script>
-/* ── API KEY MANAGEMENT ── */
-const KEY_STORAGE = 'mathsnap_apikey';
+/* ── API KEY ── */
+const KEY = 'mathsnap_gemini_key';
 let apiKey = '';
 
-function loadSavedKey() {
+function loadKey() {
   try {
-    const saved = localStorage.getItem(KEY_STORAGE);
-    if (saved) {
-      apiKey = saved;
-      document.getElementById('apiKeyInput').value = '•'.repeat(20);
-      document.getElementById('apiKeyInput').classList.add('saved');
-      document.getElementById('clearKeyBtn').style.display = 'inline-flex';
-      document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--green)">✓ API key saved in your browser</span>';
-      document.getElementById('apiStatusBadge').textContent = '✓ Ready';
-      document.getElementById('apiStatusBadge').className = 'api-status ok';
-      // Collapse setup box
-      document.getElementById('apiSetup').style.borderColor = 'rgba(74,222,128,.2)';
-    }
+    const s = localStorage.getItem(KEY);
+    if (s) { apiKey = s; markKeySaved(); }
   } catch(e) {}
+}
+
+function markKeySaved() {
+  document.getElementById('apiKeyInput').value = '•'.repeat(24);
+  document.getElementById('apiKeyInput').classList.add('saved');
+  document.getElementById('clearKeyBtn').style.display = 'inline-flex';
+  document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--green)">✓ API key saved — Ready to solve math problems!</span>';
+  document.getElementById('apiStatusBadge').textContent = '✓ Ready';
+  document.getElementById('apiStatusBadge').className = 'api-status ok';
+  document.getElementById('apiSetup').classList.add('has-key');
 }
 
 document.getElementById('saveKeyBtn').addEventListener('click', () => {
   const val = document.getElementById('apiKeyInput').value.trim();
-  if (!val || val.startsWith('•')) { 
-    document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--red)">Please enter a valid API key</span>';
+  if (!val || val.startsWith('•')) {
+    document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--red)">Please paste your API key first</span>';
     return;
   }
-  if (!val.startsWith('sk-ant-')) {
-    document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--orange)">⚠ Key should start with sk-ant- — double check?</span>';
+  if (!val.startsWith('AIza')) {
+    document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--orange)">⚠ Gemini keys start with "AIza" — double check?</span>';
   }
-  try { localStorage.setItem(KEY_STORAGE, val); } catch(e) {}
+  try { localStorage.setItem(KEY, val); } catch(e) {}
   apiKey = val;
-  document.getElementById('apiKeyInput').value = '•'.repeat(20);
-  document.getElementById('apiKeyInput').classList.add('saved');
-  document.getElementById('clearKeyBtn').style.display = 'inline-flex';
-  document.getElementById('keyFeedback').innerHTML = '<span style="color:var(--green)">✓ Saved! Ready to solve.</span>';
-  document.getElementById('apiStatusBadge').textContent = '✓ Ready';
-  document.getElementById('apiStatusBadge').className = 'api-status ok';
-  document.getElementById('apiSetup').style.borderColor = 'rgba(74,222,128,.2)';
+  markKeySaved();
 });
 
 document.getElementById('clearKeyBtn').addEventListener('click', () => {
-  try { localStorage.removeItem(KEY_STORAGE); } catch(e) {}
+  try { localStorage.removeItem(KEY); } catch(e) {}
   apiKey = '';
   document.getElementById('apiKeyInput').value = '';
   document.getElementById('apiKeyInput').classList.remove('saved');
   document.getElementById('clearKeyBtn').style.display = 'none';
   document.getElementById('keyFeedback').innerHTML = '';
-  document.getElementById('apiStatusBadge').textContent = '⚡ API key needed';
+  document.getElementById('apiStatusBadge').textContent = '⚡ Setup needed';
   document.getElementById('apiStatusBadge').className = 'api-status missing';
-  document.getElementById('apiSetup').style.borderColor = 'rgba(251,146,60,.4)';
+  document.getElementById('apiSetup').classList.remove('has-key');
 });
 
 document.getElementById('apiKeyInput').addEventListener('keydown', e => {
@@ -317,28 +309,24 @@ document.getElementById('apiKeyInput').addEventListener('keydown', e => {
 });
 
 /* ── STATE ── */
-let currentImageB64 = null;
-let currentMimeType = null;
-let isSolving = false;
-const MAX_FILE_SIZE_MB = 8;
-const MAX_B64 = 5_000_000;
+let imgB64 = null, imgMime = null, isSolving = false;
+const MAX_MB = 8;
 
 /* ── ELEMENTS ── */
-const fileInput   = document.getElementById('fileInput');
-const dropzone    = document.getElementById('dropzone');
-const previewArea = document.getElementById('previewArea');
-const previewImg  = document.getElementById('previewImg');
-const fileInfo    = document.getElementById('fileInfo');
-const solveBtn    = document.getElementById('solveBtn');
-const clearBtn    = document.getElementById('clearBtn');
-const textInput   = document.getElementById('textInput');
-const charCount   = document.getElementById('charCount');
-const solveTextBtn= document.getElementById('solveTextBtn');
-const solvingBox  = document.getElementById('solvingBox');
-const resultCard  = document.getElementById('resultCard');
-const resultBody  = document.getElementById('resultBody');
-const errorBox    = document.getElementById('errorBox');
-const sizeWarning = document.getElementById('sizeWarning');
+const fileInput    = document.getElementById('fileInput');
+const dropzone     = document.getElementById('dropzone');
+const previewArea  = document.getElementById('previewArea');
+const previewImg   = document.getElementById('previewImg');
+const fileInfo     = document.getElementById('fileInfo');
+const solveBtn     = document.getElementById('solveBtn');
+const clearBtn     = document.getElementById('clearBtn');
+const textInput    = document.getElementById('textInput');
+const charCount    = document.getElementById('charCount');
+const solveTextBtn = document.getElementById('solveTextBtn');
+const solvingBox   = document.getElementById('solvingBox');
+const resultCard   = document.getElementById('resultCard');
+const resultBody   = document.getElementById('resultBody');
+const errorBox     = document.getElementById('errorBox');
 
 /* ── FILE UPLOAD ── */
 dropzone.addEventListener('click', () => fileInput.click());
@@ -346,53 +334,43 @@ dropzone.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
 });
 fileInput.addEventListener('change', e => {
-  const f = e.target.files[0];
-  if (f) loadImage(f);
-  fileInput.value = '';
+  const f = e.target.files[0]; if (f) loadImg(f); fileInput.value = '';
 });
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
 dropzone.addEventListener('dragleave', e => { if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('drag'); });
 dropzone.addEventListener('drop', e => {
   e.preventDefault(); dropzone.classList.remove('drag');
   const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) loadImage(f);
-  else showError('Please drop an image file (JPG, PNG, or WEBP).');
+  if (f && f.type.startsWith('image/')) loadImg(f);
+  else showError('Please drop an image file.');
 });
 
-function loadImage(file) {
-  if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-    showError(`Image too large (max ${MAX_FILE_SIZE_MB}MB). Please resize and try again.`); return;
-  }
-  currentMimeType = file.type || 'image/jpeg';
+function loadImg(file) {
+  if (file.size > MAX_MB * 1024 * 1024) { showError(`Image too large (max ${MAX_MB}MB).`); return; }
+  imgMime = file.type || 'image/jpeg';
   const reader = new FileReader();
   reader.onload = ev => {
-    const dataUrl = ev.target.result;
-    currentImageB64 = dataUrl.split(',')[1];
-    sizeWarning.style.display = currentImageB64.length > MAX_B64 ? 'block' : 'none';
-    previewImg.src = dataUrl;
+    imgB64 = ev.target.result.split(',')[1];
+    previewImg.src = ev.target.result;
     fileInfo.textContent = `${file.name} • ${(file.size/1024/1024).toFixed(2)} MB`;
     previewArea.style.display = 'block';
     hideResult(); errorBox.style.display = 'none';
   };
-  reader.onerror = () => showError('Could not read the image file.');
+  reader.onerror = () => showError('Could not read image.');
   reader.readAsDataURL(file);
 }
 
 clearBtn.addEventListener('click', () => {
-  currentImageB64 = null; currentMimeType = null;
+  imgB64 = null; imgMime = null;
   previewArea.style.display = 'none'; previewImg.src = '';
-  sizeWarning.style.display = 'none';
   hideResult(); errorBox.style.display = 'none';
 });
 
 textInput.addEventListener('input', () => { charCount.textContent = textInput.value.length; });
-
-solveBtn.addEventListener('click', () => { if (currentImageB64 && !isSolving) solveImage(); });
+solveBtn.addEventListener('click', () => { if (imgB64 && !isSolving) solveImage(); });
 solveTextBtn.addEventListener('click', () => { const q = textInput.value.trim(); if (q && !isSolving) solveText(q); });
 textInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-    const q = textInput.value.trim(); if (q && !isSolving) solveText(q);
-  }
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { const q = textInput.value.trim(); if (q && !isSolving) solveText(q); }
 });
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
@@ -402,37 +380,34 @@ document.querySelectorAll('.chip').forEach(chip => {
   });
 });
 
-/* ── UI HELPERS ── */
+/* ── UI ── */
 function showSolving() {
   isSolving = true; solvingBox.style.display = 'block';
   resultCard.style.display = 'none'; errorBox.style.display = 'none';
-  setDisabled(true);
+  solveBtn.disabled = true; solveTextBtn.disabled = true;
   solvingBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 function hideResult() { solvingBox.style.display = 'none'; resultCard.style.display = 'none'; }
-function doneSolving() { isSolving = false; setDisabled(false); }
-function setDisabled(s) { solveBtn.disabled = s; solveTextBtn.disabled = s; }
+function doneSolving() { isSolving = false; solveBtn.disabled = false; solveTextBtn.disabled = false; }
 function showError(msg) {
   isSolving = false; solvingBox.style.display = 'none';
   errorBox.style.display = 'block'; errorBox.textContent = '⚠ ' + msg;
-  setDisabled(false);
+  solveBtn.disabled = false; solveTextBtn.disabled = false;
 }
 
-/* ── XSS SAFE HELPERS ── */
+/* ── XSS SAFE ── */
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function safeRich(s) {
-  return esc(s)
-    .replace(/`([^`]+)`/g,'<code>$1</code>')
-    .replace(/\*\*([^*]{1,100})\*\*/g,'<strong>$1</strong>');
+  return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]{1,100})\*\*/g,'<strong>$1</strong>');
 }
 
-/* ── API CALL ── */
-function checkApiKey() {
+/* ── CHECK KEY ── */
+function checkKey() {
   if (!apiKey) {
-    showError('Please enter your Anthropic API key above to start solving problems.');
+    showError('Please enter your free Google Gemini API key above first.');
     document.getElementById('apiKeyInput').focus();
     document.getElementById('apiSetup').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     return false;
@@ -440,73 +415,72 @@ function checkApiKey() {
   return true;
 }
 
-async function callAPI(messages) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+/* ── GEMINI API ── */
+const GEMINI_MODEL = 'gemini-2.0-flash';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+
+function buildPrompt(q) {
+  const task = q ? `Solve this math problem: ${q}` : 'Read and solve the math problem shown in this image.';
+  return `${task}
+
+Respond ONLY with valid JSON, no markdown, no extra text:
+{"problem":"restate clearly in 1 sentence","answer":"final answer concise","steps":[{"num":1,"text":"step — use backticks for expressions like \`3x+2\`, **bold** for key results"}],"explanation":"1-2 sentence method note","error":null}
+
+If unsolvable set "error" to a short message. Plain text only, no LaTeX.`;
+}
+
+async function callGemini(parts) {
+  const url = `${GEMINI_URL}?key=${apiKey}`;
+  const body = {
+    contents: [{ parts }],
+    generationConfig: { temperature: 0.1, maxOutputTokens: 1000 }
+  };
+  const res = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1000,
-      system: 'You are an expert math tutor. Always respond with ONLY valid JSON — no markdown fences, no extra text.',
-      messages
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     const msg = err.error?.message || '';
-    if (res.status === 401) throw new Error('Invalid API key. Please check and re-enter your key.');
-    if (res.status === 429) throw new Error('Rate limit reached. Please wait a moment and try again.');
-    throw new Error(msg || `Server error (${res.status})`);
+    if (res.status === 400 && msg.includes('API_KEY')) throw new Error('Invalid API key. Please check and re-enter your Gemini key.');
+    if (res.status === 429) throw new Error('Too many requests. Please wait a moment and try again.');
+    if (res.status === 403) throw new Error('API key not authorized. Make sure Gemini API is enabled in Google AI Studio.');
+    throw new Error(msg || `Error ${res.status}`);
   }
   const data = await res.json();
-  const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   const clean = raw.replace(/^```[a-z]*\n?/i,'').replace(/\n?```$/,'').trim();
   let parsed = null;
   try { parsed = JSON.parse(clean); } catch(_) {}
   return { parsed, raw };
 }
 
-function buildPrompt(q) {
-  const instruction = q ? `Solve this math problem: ${q}` : 'Read and solve the math problem in this image.';
-  return `${instruction}
-
-Return ONLY this JSON:
-{"problem":"restate clearly","answer":"final answer","steps":[{"num":1,"text":"use \`backticks\` for expressions, **bold** for key results"}],"explanation":"1-2 sentence method note","error":null}
-
-If unsolvable set "error" to explanation. Plain text only, no LaTeX.`;
-}
-
 async function solveImage() {
-  if (!checkApiKey()) return;
+  if (!checkKey()) return;
   showSolving();
   try {
-    const { parsed, raw } = await callAPI([{
-      role:'user',
-      content:[
-        {type:'image',source:{type:'base64',media_type:currentMimeType,data:currentImageB64}},
-        {type:'text',text:buildPrompt('')}
-      ]
-    }]);
+    const parts = [
+      { inline_data: { mime_type: imgMime, data: imgB64 } },
+      { text: buildPrompt('') }
+    ];
+    const { parsed, raw } = await callGemini(parts);
     renderResult(parsed, raw);
   } catch(e) { showError(e.message || 'Connection error. Please try again.'); }
   finally { doneSolving(); }
 }
 
 async function solveText(q) {
-  if (!checkApiKey()) return;
+  if (!checkKey()) return;
   showSolving();
   try {
-    const { parsed, raw } = await callAPI([{role:'user',content:buildPrompt(q)}]);
+    const { parsed, raw } = await callGemini([{ text: buildPrompt(q) }]);
     renderResult(parsed, raw);
   } catch(e) { showError(e.message || 'Connection error. Please try again.'); }
   finally { doneSolving(); }
 }
 
+/* ── RENDER ── */
 function renderResult(parsed, raw) {
   solvingBox.style.display = 'none';
   resultCard.style.display = 'block';
@@ -514,31 +488,31 @@ function renderResult(parsed, raw) {
   if (!parsed) {
     resultBody.innerHTML = `<div class="explanation" style="color:var(--text)">${esc(raw).replace(/\n/g,'<br>')}</div>
       <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>`;
-    attachCopy(); resultCard.scrollIntoView({behavior:'smooth',block:'nearest'}); return;
+    attachCopy(); resultCard.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
   }
   if (parsed.error) {
     resultBody.innerHTML = `<div class="explanation" style="color:var(--red)"><strong>Could not solve:</strong> ${esc(parsed.error)}</div>`;
-    resultCard.scrollIntoView({behavior:'smooth',block:'nearest'}); return;
+    resultCard.scrollIntoView({ behavior:'smooth', block:'nearest' }); return;
   }
 
   let stepsHtml = '';
   if (Array.isArray(parsed.steps) && parsed.steps.length) {
     stepsHtml = '<p class="steps-label">step-by-step solution</p>';
     parsed.steps.forEach(s => {
-      stepsHtml += `<div class="step"><div class="step-num" aria-hidden="true">${parseInt(s.num,10)||'?'}</div><div class="step-text">${safeRich(s.text||'')}</div></div>`;
+      stepsHtml += `<div class="step"><div class="step-num">${parseInt(s.num,10)||'?'}</div><div class="step-text">${safeRich(s.text||'')}</div></div>`;
     });
   }
 
   resultBody.innerHTML = `
-    <div class="answer-box" role="region" aria-label="Final answer">
+    <div class="answer-box">
       <div class="answer-label">final answer</div>
       <div class="answer-value">${esc(parsed.answer||'—')}</div>
     </div>
     ${stepsHtml}
-    ${parsed.explanation?`<div class="explanation"><strong>Method:</strong> ${esc(parsed.explanation)}</div>`:''}
+    ${parsed.explanation ? `<div class="explanation"><strong>Method:</strong> ${esc(parsed.explanation)}</div>` : ''}
     <button class="btn btn-ghost" style="margin-top:1rem;font-size:.8rem" id="copyBtn">Copy solution</button>`;
   attachCopy();
-  resultCard.scrollIntoView({behavior:'smooth',block:'nearest'});
+  resultCard.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
 function attachCopy() {
@@ -553,8 +527,7 @@ function attachCopy() {
   });
 }
 
-/* ── INIT ── */
-loadSavedKey();
+loadKey();
 </script>
 </body>
 </html>
